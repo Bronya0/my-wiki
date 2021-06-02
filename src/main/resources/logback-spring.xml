@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。-->
+<!--debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。-->
+<!--scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!-- 全局变量 -->
+    <!--日志文件保存路径-->
+    <springProperty scope="context" name="logPath" source="logging.file.path" defaultValue="logs"/>
+    <!--应用名称-->
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="springBoot"/>
+
+    <!-- 通用日志文件输出appender -->
+    <appender name="COMMON_FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--日志名称，如果没有File 属性，那么只会使用FileNamePattern的文件路径规则
+            如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
+            的日志改名为今天的日期。即，<File> 的日志都是当天的。
+        -->
+        <File>${logPath}/${appName}.log</File>
+        <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+            <FileNamePattern>${logPath}/${appName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--只保留最近30天的日志-->
+            <maxHistory>30</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
+            <totalSizeCap>30MB</totalSizeCap>
+        </rollingPolicy>
+        <!--日志输出编码格式化-->
+        <encoder>
+            <charset>UTF-8</charset>
+            <!--<pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+            <pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 开发环境,多个使用逗号隔开，INFO级别，只在控制台输出日志-->
+    <springProfile name="dev">
+        <!-- 本地开发控制栏彩色日志 -->
+        <!-- 彩色日志依赖的渲染类 -->
+        <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+        <conversionRule conversionWord="wex"
+                        converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+        <conversionRule conversionWord="wEx"
+                        converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+        <!-- 彩色日志格式 -->
+        <property name="CONSOLE_LOG_PATTERN"
+                  value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+        <!-- Console 输出设置 -->
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <layout>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </layout>
+        </appender>
+        <!-- 控制台不打印tomcat启动过程中的JAR包扫描警告 -->
+        <logger name="o.a.tomcat.util.scan.StandardJarScanner" level="ERROR" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <!--指定最基础的日志输出级别-->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试环境,多个使用逗号隔开,测试环境输出INFO级别日志,只以文件形式输出-->
+    <springProfile name="test">
+        <logger name="com.xf" level="INFO" additivity="false">
+            <appender-ref ref="COMMON_FILE_LOG"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="COMMON_FILE_LOG"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境,多个使用逗号隔开,生产环境输出ERROR级别日志,只以文件形式输出-->
+    <springProfile name="prod">
+        <root level="ERROR">
+            <appender-ref ref="COMMON_FILE_LOG"/>
+        </root>
+    </springProfile>
+
+</configuration>
