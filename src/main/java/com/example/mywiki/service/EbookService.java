@@ -4,11 +4,10 @@ import com.example.mywiki.domain.Ebook;
 import com.example.mywiki.mapper.EbookMapper;
 import com.example.mywiki.request.EbookReq;
 import com.example.mywiki.response.EbookResp;
-import org.springframework.beans.BeanUtils;
+import com.example.mywiki.utils.CopyUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,12 +26,7 @@ public class EbookService {
     public List<EbookResp> search(EbookReq req){
         List<Ebook> ebookList  = ebookMapper.selectByName("%" + req.getName() + "%");
         //将List<Ebook>转换为List<EbookResp>
-        List<EbookResp> respList = new ArrayList<>();
-        for (Ebook ebook : ebookList) {
-            EbookResp ebookResp = new EbookResp();
-            BeanUtils.copyProperties(ebook,ebookResp);
-            respList.add(ebookResp);
-        }
+        List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
         return respList;
     }
 }
