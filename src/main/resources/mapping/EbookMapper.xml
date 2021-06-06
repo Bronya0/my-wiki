@@ -37,6 +37,15 @@
     from ebook
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+    select
+    <include refid="Base_Column_List" />
+    from ebook
+    where name like #{name}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--
       WARNING - @mbg.generated
