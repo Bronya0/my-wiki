@@ -1,6 +1,7 @@
 package com.example.mywiki.controller;
 
 import com.example.mywiki.domain.Ebook;
+import com.example.mywiki.request.EbookReq;
 import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.service.EbookService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,18 +22,18 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")
-    public CommonResp list(Long id){
+    public CommonResp list(EbookReq req){
         CommonResp<Ebook> commonResp = new CommonResp<>();
         //通用返回对象
-        Ebook list = ebookService.list(id);
+        Ebook list = ebookService.list(req);
         commonResp.setContent(list);
         return commonResp;
     }
 
     @GetMapping("/search")
-    public CommonResp search(String name){
+    public CommonResp search(EbookReq req){
         CommonResp<List<Ebook>> commonResp = new CommonResp<>();
-        List<Ebook> ebook = ebookService.search(name);
+        List<Ebook> ebook = ebookService.search(req);
         commonResp.setContent(ebook);
         return commonResp;
     }

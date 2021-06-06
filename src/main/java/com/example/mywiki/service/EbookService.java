@@ -2,6 +2,7 @@ package com.example.mywiki.service;
 
 import com.example.mywiki.domain.Ebook;
 import com.example.mywiki.mapper.EbookMapper;
+import com.example.mywiki.request.EbookReq;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,11 +16,11 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public Ebook list(Long id){
-        return ebookMapper.selectByPrimaryKey(id);
+    public Ebook list(EbookReq req){
+        return ebookMapper.selectByPrimaryKey(req.getId());
     }
 
-    public List<Ebook> search(String name){
-        return ebookMapper.selectByName("%"+name+"%");
+    public List<Ebook> search(EbookReq req){
+        return ebookMapper.selectByName("%"+req.getName()+"%");
     }
 }
