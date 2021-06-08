@@ -48,23 +48,77 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      Content
+      <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="books" :grid="{ gutter: 16, column: 4 }" >
+        <template #renderItem="{ item }">
+          <a-list-item key="item.name">
+            <template #actions>
+          <span v-for="{ type, text } in actions" :key="type">
+            <component v-bind:is="type" style="margin-right: 8px" />
+            {{ text }}
+          </span>
+            </template>
+
+            <a-list-item-meta :description="item.description">
+              <template #title>
+                <a :href="item.href">{{ item.name }}</a>
+              </template>
+              <template #avatar><a-avatar :src="item.avatar" /></template>
+            </a-list-item-meta>
+            {{ item.content }}
+          </a-list-item>
+        </template>
+      </a-list>
     </a-layout-content>
   </a-layout>
 </template>
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent,reactive,toRef} from "vue";
 import axios from "axios";
+import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
+
+const listData: Record<string, string>[] = [];
+
 
 export default defineComponent({
   name:'Home',
+  components: {
+    StarOutlined,
+    LikeOutlined,
+    MessageOutlined,
+  },
   setup(){
-  console.log("log"),
-  axios.get("http://localhost:8081/ebook/search?name=y").then((response) => {
-    console.log(response);
-  })
-  }
+    const ebooks = reactive({books:[]});
+    axios.get("http://localhost:8081/ebook/search?name=教程").then((response) => {
+      const data = response.data;
+      ebooks.books = data.content;
+    });
+    const pagination = {
+      onChange: (page: number) => {
+        console.log(page);
+      },
+      pageSize: 5,
+    };
+    const actions: Record<string, string>[] = [
+      { type: 'StarOutlined', text: '156' },
+      { type: 'LikeOutlined', text: '156' },
+      { type: 'MessageOutlined', text: '2' },
+    ];
+    return {
+      books: toRef(ebooks,"books"),
+      listData,
+      pagination,
+      actions,
+    }
+  },
 })
 </script>
 
-
+<style scoped>
+  .ant-avatar {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 8%;
+    margin: 5px 0;
+  }
+</style>
