@@ -52,5 +52,19 @@
     </a-layout-content>
   </a-layout>
 </template>
+<script lang="ts">
+import {defineComponent} from "vue";
+import axios from "axios";
+
+export default defineComponent({
+  name:'Home',
+  setup(){
+  console.log("log"),
+  axios.get("http://localhost:8081/ebook/search?name=y").then((response) => {
+    console.log(response);
+  })
+  }
+})
+</script>
 
 

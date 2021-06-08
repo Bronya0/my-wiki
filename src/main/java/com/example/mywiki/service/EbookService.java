@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 电子书服务
+ * Ebook服务
  * Created by tangssst@qq.com on 2021/06/04
  */
 @Service

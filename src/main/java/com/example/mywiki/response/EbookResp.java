@@ -1,5 +1,8 @@
 package com.example.mywiki.response;
 
+/**
+ * Ebook返回对象
+ */
 public class EbookResp {
     /**
      *

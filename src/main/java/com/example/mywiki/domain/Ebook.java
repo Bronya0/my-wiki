@@ -1,5 +1,8 @@
 package com.example.mywiki.domain;
 
+/**
+ * Ebook实体类，id、name、category1Id、category2Id、description、cover、docCount、viewCount、voteCount
+ */
 public class Ebook {
     /**
      *

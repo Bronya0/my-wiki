@@ -1,5 +1,8 @@
 package com.example.mywiki.request;
 
+/**
+ * 请求参数封装
+ */
 public class EbookReq {
 
     private Long id;
