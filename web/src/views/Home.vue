@@ -78,7 +78,6 @@ import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-v
 
 const listData: Record<string, string>[] = [];
 
-
 export default defineComponent({
   name:'Home',
   components: {
@@ -88,7 +87,7 @@ export default defineComponent({
   },
   setup(){
     const ebooks = reactive({books:[]});
-    axios.get("http://localhost:8081/ebook/search?name=教程").then((response) => {
+    axios.get("/ebook/search?name=教程").then((response) => {
       const data = response.data;
       ebooks.books = data.content;
     });
