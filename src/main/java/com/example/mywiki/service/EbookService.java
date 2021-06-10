@@ -5,6 +5,7 @@ import com.example.mywiki.mapper.EbookMapper;
 import com.example.mywiki.request.EbookReq;
 import com.example.mywiki.response.EbookResp;
 import com.example.mywiki.utils.CopyUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -26,6 +27,7 @@ public class EbookService {
 
     public List<EbookResp> search(EbookReq req) {
         if (!ObjectUtils.isEmpty(req)) {
+            PageHelper.startPage(1,3);
             List<Ebook> ebookList = ebookMapper.selectByName("%" + req.getName() + "%");
             //将List<Ebook>转换为List<EbookResp>
             List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);

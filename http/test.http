@@ -1,1 +1,1 @@
-GET http://localhost:8081/ebook/search?name=
+GET http://localhost:8081/ebook/search?name=教程
