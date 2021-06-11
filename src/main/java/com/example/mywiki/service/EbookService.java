@@ -9,7 +9,6 @@ import com.example.mywiki.utils.CopyUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,22 +27,19 @@ public class EbookService {
     }
 
     public PageResp<EbookResp> search(EbookReq req) {
-        if (!ObjectUtils.isEmpty(req)) {
-            PageHelper.startPage(req.getPage(),req.getSize());
+        //启用PageHelper，分页查询
+        PageHelper.startPage(req.getPage(), req.getSize());
+        List<Ebook> ebookList = ebookMapper.selectByName(req.getName());
 
-            List<Ebook> ebookList = ebookMapper.selectByName("%" + req.getName() + "%");
-            //将List<Ebook>转换为List<EbookResp>
-            List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
+        //将List<Ebook>转换为List<EbookResp>
+        List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
 
-            PageInfo<Ebook> ebookPageInfo = new PageInfo<>(ebookList);
-            PageResp<EbookResp> pageResp = new PageResp<>();
+        //获取分页信息，将total和List给pageResp
+        PageInfo<Ebook> ebookPageInfo = new PageInfo<>(ebookList);
+        PageResp<EbookResp> pageResp = new PageResp<>();
+        pageResp.setTotal(ebookPageInfo.getTotal());
+        pageResp.setList(respList);
 
-            pageResp.setTotal(ebookPageInfo.getTotal());
-            pageResp.setList(respList);
-
-            return pageResp;
-        } else {
-            return null;
-        }
+        return pageResp;
     }
 }

@@ -43,7 +43,13 @@
     select
     <include refid="Base_Column_List" />
     from ebook
-    where name like #{name}
+    <if test="name != null and name != ''">
+      where name like concat('%',#{name},'%')
+    </if>
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from ebook
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

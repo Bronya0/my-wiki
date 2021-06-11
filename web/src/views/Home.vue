@@ -87,9 +87,14 @@ export default defineComponent({
   },
   setup(){
     const ebooks = reactive({books:[]});
-    axios.get("/ebook/search?name=教程").then((response) => {
+    axios.get("/ebook/search",{
+      params:{
+        page:1,
+        size:1000,
+      }
+    }).then((response) => {
       const data = response.data;
-      ebooks.books = data.content;
+      ebooks.books = data.content.list;
     });
     const pagination = {
       onChange: (page: number) => {
