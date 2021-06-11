@@ -17,7 +17,7 @@ public class CommonResp<T> {
     private String message;
 
     /**
-     * 返回泛型数据，自定义类型
+     * 不确定的数据用泛型，类里也加，自定义类型
      */
     private T content;
 

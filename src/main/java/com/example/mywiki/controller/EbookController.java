@@ -4,13 +4,13 @@ import com.example.mywiki.domain.Ebook;
 import com.example.mywiki.request.EbookReq;
 import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.response.EbookResp;
+import com.example.mywiki.response.PageResp;
 import com.example.mywiki.service.EbookService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * Created by tangssst@qq.com on 2021/06/04
@@ -33,8 +33,8 @@ public class EbookController {
 
     @GetMapping("/search")
     public CommonResp search(EbookReq req){
-        CommonResp<List<EbookResp>> commonResp = new CommonResp<>();
-        List<EbookResp> ebook = ebookService.search(req);
+        CommonResp<PageResp<EbookResp>> commonResp = new CommonResp<>();
+        PageResp<EbookResp> ebook = ebookService.search(req);
         commonResp.setContent(ebook);
         return commonResp;
     }

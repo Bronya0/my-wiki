@@ -3,7 +3,7 @@ package com.example.mywiki.request;
 /**
  * 请求参数封装
  */
-public class EbookReq {
+public class EbookReq extends PageReq{
 
     private Long id;
 
