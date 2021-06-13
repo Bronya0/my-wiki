@@ -1,8 +1,10 @@
 <template>
+  //页面布局，上中下，左侧边栏。
   <a-layout>
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
+
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
@@ -21,6 +23,7 @@
           </a-form-item>
         </a-form>
       </p>
+
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -54,15 +57,19 @@
           </a-space>
         </template>
       </a-table>
+
     </a-layout-content>
   </a-layout>
 
+  //模态框
+  //属性
   <a-modal
       title="电子书表单"
       v-model:visible="modalVisible"
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
+    //模态框的内容: form表单: 封面\名称\分类\描述
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="封面">
         <a-input v-model:value="ebook.cover" />
@@ -82,12 +89,14 @@
       </a-form-item>
     </a-form>
   </a-modal>
+
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -136,6 +145,46 @@ export default defineComponent({
         slots: { customRender: 'action' }
       }
     ];
+
+    // -------- 表单 ---------
+    /**
+     * 数组，[100, 101]对应：前端开发 / Vue
+     */
+    const categoryIds = ref();
+    const ebook = ref();
+    const modalVisible = ref(false);
+    const modalLoading = ref(false);
+
+    const handleModalOk = () => {
+      modalLoading.value = true;
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
+
+      axios.post("/ebook/save", ebook.value).then((response) => {
+        modalLoading.value = false;
+        const data = response.data; // data = commonResp
+        if (data.success) { //如果成功
+          modalVisible.value = false;
+
+          // 重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 编辑
+     */
+    const edit = (record: any) => {
+      modalVisible.value = true;
+      ebook.value = Tool.copy(record);
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
+    };
 
     /**
      * 数据查询
@@ -195,6 +244,16 @@ export default defineComponent({
       loading,
       handleTableChange,
       handleQuery,
+
+
+      edit,
+
+      ebook,
+      modalVisible,
+      modalLoading,
+      handleModalOk,
+      categoryIds,
+
 
     }
   }
