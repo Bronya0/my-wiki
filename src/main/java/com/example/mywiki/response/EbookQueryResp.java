@@ -1,7 +1,7 @@
 package com.example.mywiki.response;
 
 /**
- * Ebook返回对象
+ * Ebook查询返回对象
  */
 public class EbookQueryResp {
 

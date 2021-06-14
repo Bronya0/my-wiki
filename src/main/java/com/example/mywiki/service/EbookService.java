@@ -7,6 +7,7 @@ import com.example.mywiki.request.EbookSaveReq;
 import com.example.mywiki.response.EbookQueryResp;
 import com.example.mywiki.response.PageResp;
 import com.example.mywiki.utils.CopyUtil;
+import com.example.mywiki.utils.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ import java.util.List;
 public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
+
+    @Resource
+    private SnowFlake snowFlake;
 
     public Ebook list(EbookQueryReq req) {
         return ebookMapper.selectByPrimaryKey(req.getId());
@@ -57,9 +61,18 @@ public class EbookService {
     public void save(EbookSaveReq saveReq){
         Ebook ebook = CopyUtil.copy(saveReq,Ebook.class);
         if (ObjectUtils.isEmpty(saveReq.getId())){
+            ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         }else {
             ebookMapper.updateByPrimaryKey(ebook);
         }
+    }
+
+    /**
+     * Ebook删除
+     * @param id
+     */
+    public void delete(Long id){
+        ebookMapper.deleteByPrimaryKey(id);
     }
 }

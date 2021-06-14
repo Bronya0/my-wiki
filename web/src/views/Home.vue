@@ -100,7 +100,7 @@ export default defineComponent({
       onChange: (page: number) => {
         console.log(page);
       },
-      pageSize: 5,
+      pageSize: 20,
     };
     const actions: Record<string, string>[] = [
       { type: 'StarOutlined', text: '156' },

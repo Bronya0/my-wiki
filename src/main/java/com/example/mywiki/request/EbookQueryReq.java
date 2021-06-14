@@ -1,7 +1,7 @@
 package com.example.mywiki.request;
 
 /**
- * 请求参数封装
+ * 请求查询参数封装
  */
 public class EbookQueryReq extends PageReq{
 

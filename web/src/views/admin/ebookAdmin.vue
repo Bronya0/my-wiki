@@ -1,5 +1,4 @@
 <template>
-  //页面布局，上中下，左侧边栏。
   <a-layout>
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
@@ -8,11 +7,11 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="名称">
+            <a-input v-model:value="param.name" placeholder="名称" @keyup.enter="handleQuery({page: 1, size: pagination.pageSize})" >
             </a-input>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize}) ">
               查询
             </a-button>
           </a-form-item>
@@ -61,15 +60,13 @@
     </a-layout-content>
   </a-layout>
 
-  //模态框
-  //属性
+
   <a-modal
       title="电子书表单"
       v-model:visible="modalVisible"
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
-    //模态框的内容: form表单: 封面\名称\分类\描述
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="封面">
         <a-input v-model:value="ebook.cover" />
@@ -77,12 +74,11 @@
       <a-form-item label="名称">
         <a-input v-model:value="ebook.name" />
       </a-form-item>
-      <a-form-item label="分类">
-        <a-cascader
-            v-model:value="categoryIds"
-            :field-names="{ label: 'name', value: 'id', children: 'children' }"
-            :options="level1"
-        />
+      <a-form-item label="分类1">
+        <a-input v-model:value="ebook.category1Id" />
+      </a-form-item>
+      <a-form-item label="分类2">
+        <a-input v-model:value="ebook.category2Id" />
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="textarea" />
@@ -96,7 +92,7 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import {Tool} from "@/util/tool";
+// import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -182,8 +178,35 @@ export default defineComponent({
      */
     const edit = (record: any) => {
       modalVisible.value = true;
-      ebook.value = Tool.copy(record);
-      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
+      ebook.value = record;
+      // ebook.value = Tool.copy(record);
+      // categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
+    };
+
+    /**
+     * 新增
+     */
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value = {};
+    };
+
+    /**
+     * 删除
+     */
+    const handleDelete = (id: number) => {
+      axios.delete("/ebook/delete/" + id).then((response) => {
+        const data = response.data; // data = commonResp
+        if (data.success) {
+          // 重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
     };
 
     /**
@@ -247,6 +270,9 @@ export default defineComponent({
 
 
       edit,
+      add,
+      handleDelete,
+
 
       ebook,
       modalVisible,

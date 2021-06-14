@@ -1,6 +1,8 @@
 package com.example.mywiki.mapper;
 
 import com.example.mywiki.domain.Ebook;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public interface EbookMapper {
      */
     Ebook selectByPrimaryKey(Long id);
 
-    List<Ebook> selectByName(String name);
+    List<Ebook> selectByName(@Param("name") String name);
     List<Ebook> selectAll();
 
     /**
