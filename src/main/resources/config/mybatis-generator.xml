@@ -17,40 +17,47 @@
     introspectedColumnImpl：类全限定名，用于扩展MBG
     -->
     <context id="my" targetRuntime="MyBatis3">
-        <!--1. value="true"去掉注释，如果不去掉注释的时候，
-                第二次生成的时候不会再后面追加内容，但是去掉注释的时候，
-                在第二次以后需要生成文件的时候先把它删掉，再生成，
-                否则就会在原来的文件后面追加内容
-        -->
+
+        <!-- 自动检查关键字，为关键字增加反引号 -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <!--覆盖生成XML文件-->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+        <!-- 生成的实体类添加toString()方法 -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+
+        <!--不生成注释  -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
 
         <!--2.加载连接数据库信息  -->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://127.0.0.1:3306/mywiki?serverTimezone=Asia/Shanghai"
                         userId="root"
-                        password="13276785241" />
+                        password="13276785241">
+            <!--防止生成其他库同名表-->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
 
         <!--3.生成Model类的包名和位置 -->
         <!--targetProject=  指定包所在的位置，只需要到src/main/java  -->
         <javaModelGenerator targetPackage="com.example.mywiki.domain"
                             targetProject="src/main/java">
-            <!--如果包不存在，创建一个  -->
-            <property name="enableSubPackages" value="true"/>
-            <property name="trimStrings" value="true"/>
+
         </javaModelGenerator>
 
         <!--4.生成映射文件包名和位置 -->
         <!-- 指定包的位置,只需到上一级 -->
         <sqlMapGenerator targetPackage="mapping"
                          targetProject="src/main/resources">
-            <!--如果包不存在创建一个  -->
-            <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
         <!--5.生成dao层(mapper层)的包和位置  -->
         <javaClientGenerator targetPackage="com.example.mywiki.mapper" type="XMLMAPPER"
                              targetProject="src/main/java">
-            <!--如果包不存在创建一个  -->
-            <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
         <!--6. 我要生成的表, 可以一次性生成多张表.
@@ -58,6 +65,13 @@
         domainObjectName是实体名, 默认表名首字母大写
         -->
         <table tableName="ebook" domainObjectName="Ebook"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        <table tableName="category" domainObjectName="Category"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"

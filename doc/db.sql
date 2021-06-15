@@ -1,3 +1,4 @@
+#电子书表
 drop table if exists `ebook`;
 create table `ebook`
 (
@@ -40,3 +41,30 @@ insert into `ebook` (id,name,description) values (24,'word教程','中国人也�
 insert into `ebook` (id,name,description) values (25,'office教程','中国人也得学office');
 insert into `ebook` (id,name,description) values (26,'wps教程','中国人也得学wps');
 insert into `ebook` (id,name,description) values (27,'建站教程','中国人也得学建站');
+
+#分类表
+drop table if exists `category`;
+create table `category`(
+    `id` bigint not null comment 'id',
+    `parent` bigint not null comment '父id',
+    `name` varchar(50) not null comment '名字',
+    `sort` int comment '顺序',
+    primary key (`id`)
+) engine=innodb default charset=utf8mb4 comment='分类';
+
+insert into `category` (id, parent, name, sort) VALUES (100,000,'编程语言',100);
+insert into `category` (id, parent, name, sort) VALUES (101,100,'java',101);
+insert into `category` (id, parent, name, sort) VALUES (102,100,'golang',102);
+
+insert into `category` (id, parent, name, sort) VALUES (200,000,'开发工具',200);
+insert into `category` (id, parent, name, sort) VALUES (201,200,'IDEA',201);
+insert into `category` (id, parent, name, sort) VALUES (202,200,'eclipse',202);
+
+insert into `category` (id, parent, name, sort) VALUES (300,000,'数据库',300);
+insert into `category` (id, parent, name, sort) VALUES (301,300,'redis',301);
+insert into `category` (id, parent, name, sort) VALUES (302,300,'mysql',302);
+
+insert into `category` (id, parent, name, sort) VALUES (400,000,'框架',400);
+insert into `category` (id, parent, name, sort) VALUES (401,400,'mybatis',401);
+insert into `category` (id, parent, name, sort) VALUES (402,400,'spring',402);
+
