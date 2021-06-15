@@ -9,6 +9,7 @@ import com.example.mywiki.service.EbookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * Created by tangssst@qq.com on 2021/06/04
@@ -26,7 +27,7 @@ public class EbookController {
      * @return
      */
     @GetMapping("/search")
-    public CommonResp search(EbookQueryReq req){
+    public CommonResp search(@Valid EbookQueryReq req){
         CommonResp<PageResp<EbookQueryResp>> commonResp = new CommonResp<>();
         PageResp<EbookQueryResp> ebook = ebookService.search(req);
         commonResp.setContent(ebook);
@@ -40,7 +41,7 @@ public class EbookController {
      * @return
      */
     @PostMapping("/save")
-    public CommonResp save(@RequestBody EbookSaveReq req){
+    public CommonResp save(@Valid @RequestBody EbookSaveReq req){
         CommonResp commonResp = new CommonResp<>();
         ebookService.save(req);
         return commonResp;

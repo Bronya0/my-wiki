@@ -92,7 +92,7 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-// import {Tool} from "@/util/tool";
+import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -120,8 +120,12 @@ export default defineComponent({
         dataIndex: 'name'
       },
       {
-        title: '分类',
-        slots: { customRender: 'category' }
+        title: '分类1',
+        slots: { customRender: 'category1Id' }
+      },
+      {
+        title: '分类2',
+        slots: { customRender: 'category2Id' }
       },
       {
         title: '文档数',
@@ -136,7 +140,7 @@ export default defineComponent({
         dataIndex: 'voteCount'
       },
       {
-        title: 'Action',
+        title: '操作',
         key: 'action',
         slots: { customRender: 'action' }
       }
@@ -178,8 +182,7 @@ export default defineComponent({
      */
     const edit = (record: any) => {
       modalVisible.value = true;
-      ebook.value = record;
-      // ebook.value = Tool.copy(record);
+      ebook.value = Tool.copy(record); //对象复制
       // categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
     };
 

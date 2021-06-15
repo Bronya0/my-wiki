@@ -28,10 +28,6 @@ public class EbookService {
     @Resource
     private SnowFlake snowFlake;
 
-    public Ebook list(EbookQueryReq req) {
-        return ebookMapper.selectByPrimaryKey(req.getId());
-    }
-
     /**
      * Ebook查询方法
      * @param req

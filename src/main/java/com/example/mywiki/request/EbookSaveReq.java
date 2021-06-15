@@ -1,5 +1,7 @@
 package com.example.mywiki.request;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Ebook实体类，id、name、category1Id、category2Id、description、cover、docCount、viewCount、voteCount
  */
@@ -20,6 +22,7 @@ public class EbookSaveReq {
      *
      * @mbg.generated Fri Jun 04 20:44:22 CST 2021
      */
+    @NotNull(message = "名称不能为空")
     private String name;
 
     /**
