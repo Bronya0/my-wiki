@@ -2,14 +2,15 @@ package com.example.mywiki.controller;
 
 import com.example.mywiki.request.CategoryQueryReq;
 import com.example.mywiki.request.CategorySaveReq;
-import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.response.CategoryQueryResp;
+import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.response.PageResp;
 import com.example.mywiki.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by tangssst@qq.com on 2021/06/04
@@ -56,6 +57,17 @@ public class CategoryController {
     public CommonResp delete(@PathVariable Long id){
         CommonResp commonResp = new CommonResp<>();
         categoryService.delete(id);
+        return commonResp;
+    }
+
+    /**
+     * 一次查全部分类，用search的话多了一次分页sql查询
+     */
+    @GetMapping("/all")
+    public CommonResp all(){
+        CommonResp commonResp = new CommonResp<>();
+        List<CategoryQueryResp> category = categoryService.all();
+        commonResp.setContent(category);
         return commonResp;
     }
 

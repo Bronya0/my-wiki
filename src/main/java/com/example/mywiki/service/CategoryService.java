@@ -71,4 +71,19 @@ public class CategoryService {
     public void delete(Long id){
         categoryMapper.deleteByPrimaryKey(id);
     }
+
+    /**
+     * Category一次查全部分类
+     * @param
+     * @return
+     */
+    public List<CategoryQueryResp> all() {
+
+        List<Category> categoryList = categoryMapper.selectByName(null);
+
+        //将List<Category>转换为List<CategoryResp>
+        List<CategoryQueryResp> respList = CopyUtil.copyList(categoryList, CategoryQueryResp.class);
+
+        return respList;
+    }
 }
