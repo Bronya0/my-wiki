@@ -22,7 +22,7 @@
       <a-table
           :columns="columns"
           :row-key="record => record.id"
-          :data-source="categorys"
+          :data-source="level1"
           :loading="loading"
       >
         <template #cover="{ text: cover }">
@@ -117,17 +117,34 @@ export default defineComponent({
 
     /**
      * 数据查询
-     **/
+     *
+     * 一级分类树，children属性就是二级分类
+     * [{
+     *   id: "",
+     *   name: "",
+     *   children: [{
+     *     id: "",
+     *     name: "",
+     *   }]
+     * }]
+     */
+    const level1 = ref(); // 一级分类树，children属性就是二级分类
+    level1.value = [];
     const handleQuery = () => {
       loading.value = true;
-
-      //将params的内容作为get请求参数，向后端controller请求
+      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
+      level1.value = [];
       axios.get("/category/all").then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
           categorys.value = data.content;
+          console.log("原始数组：", categorys.value);
 
+          level1.value = [];
+          //此处查的0就是一级分类000
+          level1.value = Tool.array2Tree(categorys.value, 0);
+          console.log("树形结构：", level1);
         } else {
           message.error(data.message);
         }
@@ -195,11 +212,11 @@ export default defineComponent({
 
     return {
       param,
-      categorys,
       category,
       columns,
       loading,
       handleQuery,
+      level1,
 
 
       edit,
