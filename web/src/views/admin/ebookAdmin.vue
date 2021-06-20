@@ -35,7 +35,7 @@
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
         <template v-slot:category="{ text, record }">
-          <span></span>
+          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
@@ -74,11 +74,13 @@
       <a-form-item label="名称">
         <a-input v-model:value="ebook.name" />
       </a-form-item>
-      <a-form-item label="分类1">
-        <a-input v-model:value="ebook.category1Id" />
-      </a-form-item>
-      <a-form-item label="分类2">
-        <a-input v-model:value="ebook.category2Id" />
+      <a-form-item label="分类">
+        <a-cascader
+            v-model:value="categoryIds"
+            :field-names="{ label: 'name', value: 'id', children: 'children' }"
+            :options="level1"
+            expand-trigger="hover"
+        />
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="textarea" />
@@ -100,7 +102,6 @@ export default defineComponent({
     const param = ref();
     param.value = {};
     const ebooks = ref();
-    const categorys = ref();
     //每页参数
     const pagination = ref({
       current: 1,
@@ -121,13 +122,8 @@ export default defineComponent({
         dataIndex: 'name'
       },
       {
-        title: '分类1',
-        key : 'category1Id',
-        dataIndex: 'category1Id'
-      },
-      {
-        title: '分类2',
-        dataIndex: 'category2Id'
+        title: '分类',
+        slots: {customRender: 'category'}
       },
       {
         title: '文档数',
@@ -176,13 +172,59 @@ export default defineComponent({
       });
     };
 
+    const level1 =  ref();
+    let categorys: any;
+    /**
+     * 查询所有分类
+     **/
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/category/all").then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+          categorys = data.content;
+          console.log("原始数组：", categorys);
+
+          level1.value = [];
+          level1.value = Tool.array2Tree(categorys, 0);
+          console.log("树形结构：", level1.value);
+
+          // 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
+          handleQuery({
+            page: 1,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    const getCategoryName = (cid: number) => {
+      // console.log(cid)
+      let result = "";
+      categorys.forEach((item: any) => {
+        if (item.id === cid) {
+          // return item.name; // 注意，这里直接return不起作用
+          result = item.name;
+        }
+      });
+      return result;
+    };
+
     // -------- 表单 ---------
+    /**
+     * 数组，[100, 101]对应：前端开发 / Vue
+     */
+    const categoryIds = ref();
     const ebook = ref();
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const handleModalOk = () => {
       modalLoading.value = true;
-
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
       axios.post("/ebook/save", ebook.value).then((response) => {
         modalLoading.value = false;
         const data = response.data; // data = commonResp
@@ -206,6 +248,7 @@ export default defineComponent({
     const edit = (record: any) => {
       modalVisible.value = true;
       ebook.value = Tool.copy(record); //对象复制
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
     };
 
     /**
@@ -235,7 +278,6 @@ export default defineComponent({
     };
 
 
-
     /**
      * 表格点击页码时触发
      */
@@ -248,8 +290,10 @@ export default defineComponent({
     };
 
 
+
     //初始执行，应该先查第一页，获得的数据传入params
     onMounted(() => {
+      handleQueryCategory();
       handleQuery({
         page: 1,
         size: pagination.value.pageSize,
@@ -265,6 +309,10 @@ export default defineComponent({
       loading,
       handleTableChange,
       handleQuery,
+      categoryIds,
+      level1,
+      handleQueryCategory,
+      getCategoryName,
 
 
       edit,
