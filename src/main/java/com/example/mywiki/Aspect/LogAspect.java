@@ -68,7 +68,6 @@ public class LogAspect {
             arguments[i] = args[i];
         }
 
-        LOG.info("请求参数: {}", mapper.writeValueAsString(arguments));
     }
 
     /**

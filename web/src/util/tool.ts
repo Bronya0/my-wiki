@@ -21,7 +21,7 @@ export class Tool {
      * 对象复制
      * @param obj
      */
-    public static copy (obj: object) {
+    public static copy (obj: any) {
         if (Tool.isNotEmpty(obj)) {
             return JSON.parse(JSON.stringify(obj));
         }
