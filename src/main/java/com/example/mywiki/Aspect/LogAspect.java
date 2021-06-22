@@ -1,7 +1,7 @@
 package com.example.mywiki.Aspect;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.support.spring.PropertyPreFilters;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -55,7 +55,8 @@ public class LogAspect {
 
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
-        // LOG.info("请求参数: {}", JSONObject.toJSONString(args));
+        ObjectMapper mapper = new ObjectMapper();
+        LOG.info("请求参数: {}", mapper.writeValueAsString(args));
 
         Object[] arguments = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
@@ -66,12 +67,8 @@ public class LogAspect {
             }
             arguments[i] = args[i];
         }
-        // 排除一些不该打印出来的敏感字段，或太长的字段不显示。此处排除password和file字段
-        String[] excludeProperties = {"password", "file"};
-        PropertyPreFilters filters = new PropertyPreFilters();
-        PropertyPreFilters.MySimplePropertyPreFilter excludefilter = filters.addFilter();
-        excludefilter.addExcludes(excludeProperties);
-        LOG.info("请求参数: {}", JSONObject.toJSONString(arguments, excludefilter));
+
+        LOG.info("请求参数: {}", mapper.writeValueAsString(arguments));
     }
 
     /**
@@ -87,12 +84,8 @@ public class LogAspect {
         //业务代码
         Object result = proceedingJoinPoint.proceed();
         //后面
-        // 排除字段，敏感字段或太长的字段不显示
-        String[] excludeProperties = {"password", "file"};
-        PropertyPreFilters filters = new PropertyPreFilters();
-        PropertyPreFilters.MySimplePropertyPreFilter excludefilter = filters.addFilter();
-        excludefilter.addExcludes(excludeProperties);
-        LOG.info("返回结果: {}", JSONObject.toJSONString(result, excludefilter));
+        ObjectMapper mapper = new ObjectMapper();
+        LOG.info("返回结果: {}", mapper.writeValueAsString(result));
         LOG.info("------------- 结束 耗时：{} ms -------------", System.currentTimeMillis() - startTime);
         return result;
     }
