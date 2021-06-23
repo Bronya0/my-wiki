@@ -178,7 +178,6 @@ export default defineComponent({
      * 查询所有分类
      **/
     const handleQueryCategory = () => {
-      loading.value = true;
       axios.get("/category/all").then((response) => {
         loading.value = false;
         const data = response.data;
