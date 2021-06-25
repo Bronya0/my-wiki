@@ -7,6 +7,8 @@ public class EbookQueryReq extends PageReq{
 
     private Long id;
 
+    private Long categoryId2;
+
     private String name;
 
     public Long getId() {
@@ -26,12 +28,20 @@ public class EbookQueryReq extends PageReq{
         this.name = name == null ? null : name.trim();
     }
 
+    public Long getCategoryId2() {
+        return categoryId2;
+    }
+
+    public void setCategoryId2(Long categoryId2) {
+        this.categoryId2 = categoryId2;
+    }
+
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("EbookReq{");
-        sb.append("id=").append(id);
-        sb.append(", name='").append(name).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "EbookQueryReq{" +
+                "id=" + id +
+                ", categoryId2=" + categoryId2 +
+                ", name='" + name + '\'' +
+                "} " + super.toString();
     }
 }

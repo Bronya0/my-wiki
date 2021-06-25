@@ -1,28 +1,15 @@
 package com.example.mywiki.mapper;
 
 import com.example.mywiki.domain.Ebook;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * 常见sql操作接口
+ * @Entity com.example.mywiki.domain.Ebook
  */
-public interface EbookMapper {
+public interface EbookMapper extends BaseMapper<Ebook> {
 
-    int deleteByPrimaryKey(Long id);
-
-    int insert(Ebook record);
-
-    int insertSelective(Ebook record);
-
-    Ebook selectByPrimaryKey(Long id);
-
-    List<Ebook> selectByName(@Param("name") String name);
-
-    List<Ebook> selectAll();
-
-    int updateByPrimaryKeySelective(Ebook record);
-
-    int updateByPrimaryKey(Ebook record);
 }
+
+
+
+

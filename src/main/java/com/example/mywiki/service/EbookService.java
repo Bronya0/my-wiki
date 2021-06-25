@@ -1,5 +1,8 @@
 package com.example.mywiki.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mywiki.domain.Ebook;
 import com.example.mywiki.mapper.EbookMapper;
 import com.example.mywiki.request.EbookQueryReq;
@@ -8,12 +11,11 @@ import com.example.mywiki.response.EbookQueryResp;
 import com.example.mywiki.response.PageResp;
 import com.example.mywiki.utils.CopyUtil;
 import com.example.mywiki.utils.SnowFlake;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,17 +36,33 @@ public class EbookService {
      * @return
      */
     public PageResp<EbookQueryResp> search(EbookQueryReq req) {
-        //启用PageHelper，分页查询
-        PageHelper.startPage(req.getPage(), req.getSize());
-        List<Ebook> ebookList = ebookMapper.selectByName(req.getName());
+
+        List<Ebook> ebookList = new ArrayList<>();
+        Page<Ebook> page = new Page<>();
+        page.setPages(req.getPage()).setSize(req.getSize());
+        QueryWrapper<Ebook> wrapper = new QueryWrapper<Ebook>();
+
+
+
+        if (!ObjectUtils.isEmpty(req.getName())) {
+            //根据name模糊查询
+            wrapper.like("name", req.getName());
+            IPage<Ebook> ebookIPage = ebookMapper.selectPage(page, wrapper);
+            ebookList = ebookIPage.getRecords();
+        }else if (!ObjectUtils.isEmpty(req.getCategoryId2())) {
+            //根据categoryId2字段查
+            wrapper.eq("categoryId2", req.getCategoryId2());
+            ebookList= ebookMapper.selectList(wrapper);
+        }else {
+            //无参时查全部
+            ebookList = ebookMapper.selectPage(page, null).getRecords();
+        }
 
         //将List<Ebook>转换为List<EbookResp>
         List<EbookQueryResp> respList = CopyUtil.copyList(ebookList, EbookQueryResp.class);
-
         //获取分页信息，将total和List给pageResp
-        PageInfo<Ebook> ebookPageInfo = new PageInfo<>(ebookList);
         PageResp<EbookQueryResp> pageResp = new PageResp<>();
-        pageResp.setTotal(ebookPageInfo.getTotal());
+        pageResp.setTotal(page.getTotal());
         pageResp.setList(respList);
 
         return pageResp;
@@ -57,10 +75,12 @@ public class EbookService {
     public void save(EbookSaveReq saveReq){
         Ebook ebook = CopyUtil.copy(saveReq,Ebook.class);
         if (ObjectUtils.isEmpty(saveReq.getId())){
+            //新增
             ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         }else {
-            ebookMapper.updateByPrimaryKey(ebook);
+            //更新
+            ebookMapper.updateById(ebook);
         }
     }
 
@@ -69,7 +89,7 @@ public class EbookService {
      * @param id
      */
     public void delete(Long id){
-        ebookMapper.deleteByPrimaryKey(id);
+        ebookMapper.deleteById(id);
     }
 
 

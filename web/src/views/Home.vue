@@ -4,6 +4,7 @@
       <a-menu
           :style="{ height: '100%', borderRight: 0 }"
           :mode="vertical"
+          @click="handleClick"
       >
         <a-menu-item key="welcome">
           <router-link :to="'/'"/>
@@ -115,10 +116,24 @@ export default defineComponent({
       { type: 'MessageOutlined', text: '2' },
     ];
 
-
+    let categoryId2 = 0;
+    const handleClick = (value: any) => {
+      // console.log("menu click", value)
+        categoryId2 = value.key;
+      // isShowWelcome.value = value.key === 'welcome';
+    };
 
     onMounted(() => {
       handleQueryCategory();
+
+      axios.get('/ebook/search'),{
+        params: {
+          page: 1,
+          size: 1000,
+          categoryId2: categoryId2
+        }
+      }
+
     });
 
     return {
@@ -127,6 +142,7 @@ export default defineComponent({
       pagination,
       actions,
       level1,
+      handleClick,
 
       handleQueryCategory,
     }
