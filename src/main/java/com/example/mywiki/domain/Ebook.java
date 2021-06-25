@@ -1,5 +1,6 @@
 package com.example.mywiki.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -23,6 +24,7 @@ public class Ebook implements Serializable {
     /**
      * 分类1
      */
+    @TableField("category1_id")
     private Long category1Id;
 
     /**

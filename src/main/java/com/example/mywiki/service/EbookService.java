@@ -42,16 +42,14 @@ public class EbookService {
         page.setPages(req.getPage()).setSize(req.getSize());
         QueryWrapper<Ebook> wrapper = new QueryWrapper<Ebook>();
 
-
-
         if (!ObjectUtils.isEmpty(req.getName())) {
-            //根据name模糊查询
+            //有name则模糊查询
             wrapper.like("name", req.getName());
             IPage<Ebook> ebookIPage = ebookMapper.selectPage(page, wrapper);
             ebookList = ebookIPage.getRecords();
-        }else if (!ObjectUtils.isEmpty(req.getCategoryId2())) {
-            //根据categoryId2字段查
-            wrapper.eq("categoryId2", req.getCategoryId2());
+        }else if (!ObjectUtils.isEmpty(req.getCategory2Id())) {
+            //有category2Id则等值查，注意column不是实体属性
+            wrapper.eq("category2_Id", req.getCategory2Id());
             ebookList= ebookMapper.selectList(wrapper);
         }else {
             //无参时查全部

@@ -6,8 +6,7 @@
           :mode="vertical"
           @click="handleClick"
       >
-        <a-menu-item key="welcome">
-          <router-link :to="'/'"/>
+        <a-menu-item  @click="handleQueryEbook">
           <MailOutlined />
           <span>欢迎</span>
         </a-menu-item>
@@ -115,24 +114,37 @@ export default defineComponent({
       { type: 'LikeOutlined', text: '156' },
       { type: 'MessageOutlined', text: '2' },
     ];
-
-    let categoryId2 = 0;
-    const handleClick = (value: any) => {
-      // console.log("menu click", value)
-        categoryId2 = value.key;
-      // isShowWelcome.value = value.key === 'welcome';
-    };
-
-    onMounted(() => {
-      handleQueryCategory();
-
-      axios.get('/ebook/search'),{
+    /**
+     * 查询电子书
+     */
+    const handleQueryEbook = () => {
+      axios.get("/ebook/search", {
         params: {
           page: 1,
           size: 1000,
-          categoryId2: categoryId2
+          category2Id: category2Id
         }
-      }
+      }).then((response) => {
+        const data = response.data;
+        ebooks.books = data.content.list;
+      });
+    };
+
+    /**
+     * 点击菜单查电子书
+     */
+    let category2Id = 0;
+    const handleClick = (value: any) => {
+        category2Id = value.key;
+        handleQueryEbook();
+    };
+
+
+
+    onMounted(() => {
+      handleQueryCategory();
+      handleQueryEbook();
+
 
     });
 
@@ -143,6 +155,7 @@ export default defineComponent({
       actions,
       level1,
       handleClick,
+      handleQueryEbook,
 
       handleQueryCategory,
     }
