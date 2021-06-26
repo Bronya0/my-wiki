@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by tangssst@qq.com on 2021/06/15
  */
 @Data
-public class CategoryQueryReq extends PageReq{
+public class DocQueryReq extends PageReq{
 
 
 
