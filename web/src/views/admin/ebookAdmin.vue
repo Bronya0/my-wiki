@@ -40,7 +40,7 @@
         <template v-slot:action="{ text, record }">
           <a-space size="small">
 
-            <router-link to="/admin/doc">
+            <router-link :to="'/admin/doc?ebookId='+record.id">
               <a-button type="primary" >
                 文档
               </a-button>
@@ -101,10 +101,12 @@ import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
+
     const param = ref();
     param.value = {};
     const ebooks = ref();

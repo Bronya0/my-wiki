@@ -56,7 +56,7 @@
 
 
   <a-modal
-      title="电子书表单"
+      title="新增文档"
       v-model:visible="modalVisible"
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
@@ -65,6 +65,18 @@
 
       <a-form-item label="名称">
         <a-input v-model:value="doc.name" />
+      </a-form-item>
+      <a-form-item label="名称">
+        <a-tree-select
+            v-model:value="doc.parent"
+            style="width: 100%"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            :tree-data="treeSelectData"
+            placeholder="请选择父文档"
+            tree-default-expand-all
+            :replaceFields="{title:'name',key:'id',value:'id'}"
+        >
+        </a-tree-select>
       </a-form-item>
       <a-form-item label="父文档">
         <a-select
@@ -93,15 +105,26 @@ import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminDoc',
   setup() {
+    const route = useRoute();
+    console.log("路由：", route);
+    console.log("route.path：", route.path);
+    console.log("route.query：", route.query);
+    console.log("route.param：", route.params);
+    console.log("route.fullPath：", route.fullPath);
+    console.log("route.name：", route.name);
+    console.log("route.meta：", route.meta);
+
     const param = ref();
     param.value = {};
     const docs = ref();
 
     const loading = ref(false);
+
 
     //列表数据
     const columns = [
@@ -162,6 +185,9 @@ export default defineComponent({
     };
 
     // -------- 表单 ---------
+    // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
+    const treeSelectData = ref();
+    treeSelectData.value = [];
     const doc = ref();
     const modalVisible = ref(false);
     const modalLoading = ref(false);
@@ -183,11 +209,49 @@ export default defineComponent({
     };
 
     /**
+     * 将某节点及其子孙节点全部置为disabled
+     */
+    const setDisable = (treeSelectData: any, id: any) => {
+      // console.log(treeSelectData, id);
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if (node.id === id) {
+          // 如果当前节点就是目标节点
+          console.log("disabled", node);
+          // 将目标节点设置为disabled
+          node.disabled = true;
+
+          // 遍历所有子节点，将所有子节点全部都加上disabled
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              setDisable(children, children[j].id)
+            }
+          }
+        } else {
+          // 如果当前节点不是目标节点，则到其子节点再找找看。
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            setDisable(children, id);
+          }
+        }
+      }
+    };
+
+    /**
      * 编辑
      */
     const edit = (record: any) => {
       modalVisible.value = true;
       doc.value = Tool.copy(record); //对象复制
+
+      // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
+      treeSelectData.value = Tool.copy(level1.value);
+      setDisable(treeSelectData.value, record.id);
+
+      // 为选择树添加一个"无"
+      treeSelectData.value.unshift({id: 0, name: '无'});
     };
 
     /**
@@ -195,7 +259,15 @@ export default defineComponent({
      */
     const add = () => {
       modalVisible.value = true;
-      doc.value = {};
+      doc.value = {
+        ebookId: route.query.ebookId,
+      };
+
+
+      treeSelectData.value = Tool.copy(level1.value) || [];
+
+      // 为选择树添加一个"无"
+      treeSelectData.value.unshift({id: 0, name: '无'});
     };
 
     /**
@@ -215,6 +287,7 @@ export default defineComponent({
 
 
 
+
     //初始执行，应该先查第一页，获得的数据传入params
     onMounted(() => {
       handleQuery();
@@ -227,6 +300,7 @@ export default defineComponent({
       loading,
       handleQuery,
       level1,
+      treeSelectData,
 
 
       edit,
