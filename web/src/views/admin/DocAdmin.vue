@@ -101,11 +101,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref ,createVNode} from 'vue';
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import { message,Modal } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -317,14 +318,22 @@ export default defineComponent({
       deleteNames.length = 0;
       getDeleteIds(level1.value, id);
 
-      axios.delete("/doc/delete/" + deleteIds.join(",")).then((response) => {
-        const data = response.data; // data = commonResp
-        if (data.success) {
-          // 重新加载列表
-          handleQuery();
-        } else {
-          message.error(data.message);
-        }
+      Modal.confirm({
+        title: '重要提醒',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '将删除：【' + deleteNames.join("，") + "】删除后不可恢复，确认删除？",
+        onOk() {
+          // console.log(ids)
+          axios.delete("/doc/delete/" + deleteIds.join(",")).then((response) => {
+            const data = response.data; // data = commonResp
+            if (data.success) {
+              // 重新加载列表
+              handleQuery();
+            } else {
+              message.error(data.message);
+            }
+          });
+        },
       });
     };
 
