@@ -76,6 +76,14 @@ public class DocService {
     }
 
     /**
+     * 批量id删除
+     * @param ids
+     */
+    public void delete(List<String> ids){
+        docMapper.deleteBatchIds(ids);
+    }
+
+    /**
      * Doc一次查全部分类
      * @param
      * @return
