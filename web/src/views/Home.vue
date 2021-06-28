@@ -1,5 +1,5 @@
 <template>
-  <a-layout style="display: flex">
+  <a-layout>
     <a-layout-sider width="200" style="background: #fff">
       <a-menu
           :style="{ height: '100%', borderRight: 0 }"
