@@ -3,7 +3,6 @@
     <a-layout-sider width="200" style="background: #fff">
       <a-menu
           :style="{ height: '100%', borderRight: 0 }"
-          :mode="vertical"
           @click="handleClick"
       >
         <a-menu-item  @click="handleQueryEbook">
