@@ -23,7 +23,7 @@
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
-  <a-layout-content
+    <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
       <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="ebooks" :grid="{ gutter: 16, column: 4 }" >
