@@ -1,9 +1,10 @@
 <template>
-  <a-layout>
+  <a-layout style="display: flex">
     <a-layout-sider width="200" style="background: #fff">
       <a-menu
           :style="{ height: '100%', borderRight: 0 }"
           @click="handleClick"
+          :openKeys="openKeys"
       >
         <a-menu-item  @click="handleQueryEbook">
           <MailOutlined />
@@ -20,15 +21,12 @@
         <a-menu-item key="tip" :disabled="true">
           <span>以上菜单在分类管理配置</span>
         </a-menu-item>
-
       </a-menu>
-
     </a-layout-sider>
-
-    <a-layout-content
+  <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="books" :grid="{ gutter: 16, column: 4 }" >
+      <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="ebooks" :grid="{ gutter: 16, column: 4 }" >
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -37,12 +35,12 @@
             {{ text }}
           </span>
             </template>
-
             <a-list-item-meta :description="item.description">
               <template #title>
                 <a :href="item.href">{{ item.name }}</a>
               </template>
-              <template #avatar><a-avatar :src="item.avatar" /></template>
+              <template #avatar><a-avatar :src="item.avatar" />
+              </template>
             </a-list-item-meta>
             {{ item.content }}
           </a-list-item>
@@ -69,8 +67,9 @@ export default defineComponent({
   },
   setup(){
 
-    const ebooks = reactive({books:[]});
+    const ebooks = ref();
     const level1 = ref();
+    const openKeys =  ref();
     let categorys: any;
     /**
      * 查询所有分类
@@ -98,7 +97,7 @@ export default defineComponent({
       }
     }).then((response) => {
       const data = response.data;
-      ebooks.books = data.content.list;
+      ebooks.value = data.content.list;
     });
 
     const pagination = {
@@ -125,7 +124,7 @@ export default defineComponent({
         }
       }).then((response) => {
         const data = response.data;
-        ebooks.books = data.content.list;
+        ebooks.value = data.content.list;
       });
     };
 
@@ -148,11 +147,12 @@ export default defineComponent({
     });
 
     return {
-      books: toRef(ebooks,"books"),
+      ebooks,
       listData,
       pagination,
       actions,
       level1,
+      openKeys,
       handleClick,
       handleQueryEbook,
 
@@ -163,6 +163,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#components-layout-demo-top-side-2 .logo {
+  width: 120px;
+  height: 31px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px 28px 16px 0;
+  float: left;
+}
   .ant-avatar {
     width: 50px;
     height: 50px;
