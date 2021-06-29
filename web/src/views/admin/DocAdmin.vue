@@ -3,7 +3,7 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-row>
+      <a-row :gutter="24">
         <a-col :span="8">
           <p>
             <a-form layout="inline" :model="param">
@@ -24,17 +24,16 @@
               :row-key="record => record.id"
               :data-source="level1"
               :loading="loading"
+              :pagination="false"
+              size="small"
           >
-            <template #cover="{ text: cover }">
-              <img v-if="cover" :src="cover" alt="avatar" />
-            </template>
-            <template v-slot:doc="{ text, record }">
-              <span></span>
+            <template #name="{ text, record}">
+            {{record.sort}}{{text}}
             </template>
             <template v-slot:action="{ text, record }">
               <a-space size="small">
 
-                <a-button type="primary" @click="edit(record)">
+                <a-button type="primary" @click="edit(record)" size="small">
                   编辑
                 </a-button>
                 <a-popconfirm
@@ -43,7 +42,7 @@
                     cancel-text="否"
                     @confirm="handleDelete(record.id)"
                 >
-                  <a-button type="danger">
+                  <a-button type="danger" size="small">
                     删除
                   </a-button>
                 </a-popconfirm>
@@ -52,6 +51,15 @@
           </a-table>
         </a-col>
         <a-col :span="16">
+          <p>
+            <a-form layout="inline" model="param">
+              <a-form-item>
+                <a-button type="primary" @click="handleSave()">
+                  保存
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </p>
           <a-form :model="doc" layout="vertical">
             <a-form-item >
               <a-input v-model:value="doc.name" placeholder="文档名称"/>
@@ -87,9 +95,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref ,createVNode} from 'vue';
+import {createVNode, defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
-import { message,Modal } from 'ant-design-vue';
+import {message, Modal} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
@@ -165,18 +173,23 @@ export default defineComponent({
     };
 
     // -------- 表单 ---------
-    // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
+    // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个变量
     const doc = ref();
+    //初始化内容，避免浏览器未加载到
     doc.value = {
       ebookId: route.query.ebookId
     };
     const treeSelectData = ref();
     treeSelectData.value = [];
+    //可见性，加载性
     const modalVisible = ref(false);
     const modalLoading = ref(false);
+    //富文本编辑器，并设置高度为0避免遮挡其他
     const editor = new E('#content');
+    editor.config.zIndex = 0;
 
-    const handleModalOk = () => {
+    //对应文档内容页的保存按钮
+    const handleSave = () => {
       modalLoading.value = true;
 
       axios.post("/doc/save", doc.value).then((response) => {
@@ -349,7 +362,7 @@ export default defineComponent({
 
       modalVisible,
       modalLoading,
-      handleModalOk,
+      handleSave,
       handleDelete,
 
 
