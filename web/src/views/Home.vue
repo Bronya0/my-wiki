@@ -37,7 +37,9 @@
             </template>
             <a-list-item-meta :description="item.description">
               <template #title>
-                <a :href="item.href">{{ item.name }}</a>
+                <router-link :to="'/doc?ebookId=' + item.id">
+                  {{ item.name }}
+                </router-link>
               </template>
               <template #avatar><a-avatar :src="item.avatar" />
               </template>
@@ -50,10 +52,10 @@
   </a-layout>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRef} from "vue";
+import {defineComponent, onMounted, ref} from "vue";
 import axios from "axios";
-import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
+import {LikeOutlined, MessageOutlined, StarOutlined} from '@ant-design/icons-vue';
+import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 
 const listData: Record<string, string>[] = [];

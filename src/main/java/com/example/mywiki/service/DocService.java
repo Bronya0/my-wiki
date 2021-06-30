@@ -97,13 +97,14 @@ public class DocService {
     }
 
     /**
-     * Doc一次查全部分类
+     * Doc一次查全部文档分类,根据ebookid
      * @param
      * @return
      */
-    public List<DocQueryResp> all() {
-
-        List<Doc> docList = docMapper.selectList(null);
+    public List<DocQueryResp> all(Long ebookId) {
+        QueryWrapper<Doc> docQueryWrapper = new QueryWrapper<Doc>()
+                .eq("ebook_id",ebookId);
+        List<Doc> docList = docMapper.selectList(docQueryWrapper);
 
         //将List<Doc>转换为List<DocResp>
         List<DocQueryResp> respList = CopyUtil.copyList(docList, DocQueryResp.class);

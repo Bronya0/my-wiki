@@ -81,10 +81,10 @@ public class DocController {
     /**
      * 一次查全部分类，用search的话多了一次分页sql查询
      */
-    @GetMapping("/all")
-    public CommonResp all(){
+    @GetMapping("/all/{ebookId}")
+    public CommonResp all(@PathVariable Long ebookId){
         CommonResp commonResp = new CommonResp<>();
-        List<DocQueryResp> doc = docService.all();
+        List<DocQueryResp> doc = docService.all(ebookId);
         commonResp.setContent(doc);
         return commonResp;
     }

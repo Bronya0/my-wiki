@@ -121,6 +121,8 @@ export default defineComponent({
     const docs = ref();
 
     const loading = ref(false);
+    const treeSelectData = ref();
+    treeSelectData.value = [];
 
 
     //列表数据
@@ -152,11 +154,12 @@ export default defineComponent({
      */
     const level1 = ref(); // 一级文档树，children属性就是二级文档
     level1.value = [];
+    //查全部分类
     const handleQuery = () => {
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
       level1.value = [];
-      axios.get("/doc/all").then((response) => {
+      axios.get("/doc/all/"+ route.query.ebookId).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
@@ -167,6 +170,9 @@ export default defineComponent({
           //此处查的0就是一级文档000
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构：", level1);
+          //父文档下拉框初始化，免去点新增
+          treeSelectData.value = Tool.copy(level1.value);
+
         } else {
           message.error(data.message);
         }
@@ -178,9 +184,6 @@ export default defineComponent({
     const doc = ref();
     //初始化空对象
     doc.value = {};
-    const treeSelectData = ref();
-    treeSelectData.value = [];
-
     //富文本编辑器，并设置高度为0避免遮挡其他
     const editor = new E('#content');
     editor.config.zIndex = 0;
