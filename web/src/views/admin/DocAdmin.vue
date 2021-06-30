@@ -60,6 +60,11 @@
                   保存
                 </a-button>
               </a-form-item>
+              <a-form-item>
+                <a-button type="primary" @click="handlePreviewContent()">
+                  <EyeOutlined /> 预览
+                </a-button>
+              </a-form-item>
             </a-form>
           </p>
           <a-form :model="doc" layout="vertical">
@@ -81,13 +86,17 @@
             <a-form-item >
               <a-input v-model:value="doc.sort" placeholder="顺序" />
             </a-form-item>
-            <a-form-item label="内容">
+            <a-form-item >
               <div id="content"></div>
             </a-form-item>
 
           </a-form>
         </a-col>
       </a-row>
+
+      <a-drawer width="61.5%" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
+        <div class="wangeditor" :innerHTML="previewHtml"></div>
+      </a-drawer>
 
     </a-layout-content>
   </a-layout>
@@ -101,7 +110,7 @@ import axios from 'axios';
 import {message, Modal} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
-import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import E from 'wangeditor'
 
 export default defineComponent({
@@ -352,6 +361,22 @@ export default defineComponent({
       });
     };
 
+    /**
+     * 富文本预览，获取content->html->previewHtml
+     * drawerVisible是组件可见性
+     */
+    const drawerVisible = ref(false);
+    const previewHtml = ref();
+    const handlePreviewContent = () => {
+      const html = editor.txt.html();
+      previewHtml.value = html;
+      drawerVisible.value = true;
+    };
+
+    const onDrawerClose = () => {
+      drawerVisible.value = false;
+    };
+
     //初始执行，应该先查第一页，获得的数据传入params
     onMounted(() => {
       handleQuery();
@@ -366,6 +391,10 @@ export default defineComponent({
       handleQuery,
       level1,
       treeSelectData,
+      handlePreviewContent,
+      onDrawerClose,
+      previewHtml,
+      drawerVisible,
 
 
       edit,
