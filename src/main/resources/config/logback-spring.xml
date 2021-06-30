@@ -58,7 +58,7 @@
             <appender-ref ref="CONSOLE"/>
         </logger>
         <!--指定最基础的日志输出级别-->
-        <root level="INFO">
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>

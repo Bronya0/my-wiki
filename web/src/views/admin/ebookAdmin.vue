@@ -65,8 +65,6 @@
 
     </a-layout-content>
   </a-layout>
-
-
   <a-modal
       title="电子书表单"
       v-model:visible="modalVisible"
@@ -97,11 +95,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
-import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminEbook',

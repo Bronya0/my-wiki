@@ -78,7 +78,6 @@
               >
               </a-tree-select>
             </a-form-item>
-
             <a-form-item >
               <a-input v-model:value="doc.sort" placeholder="顺序" />
             </a-form-item>
@@ -177,31 +176,30 @@ export default defineComponent({
     // -------- 表单 ---------
     // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个变量
     const doc = ref();
-    //初始化内容，避免浏览器未加载到
-    doc.value = {
-      ebookId: route.query.ebookId
-    };
+    //初始化空对象
+    doc.value = {};
     const treeSelectData = ref();
     treeSelectData.value = [];
-    //可见性，加载性
-    const modalVisible = ref(false);
-    const modalLoading = ref(false);
+
     //富文本编辑器，并设置高度为0避免遮挡其他
     const editor = new E('#content');
     editor.config.zIndex = 0;
 
     //对应文档内容页的保存按钮
     const handleSave = () => {
-      modalLoading.value = true;
 
+      doc.value.content = editor.txt.html();
       axios.post("/doc/save", doc.value).then((response) => {
-        modalLoading.value = false;
         const data = response.data; // data = commonResp
         if (data.success) { //如果成功
-          modalVisible.value = false;
-
+          doc.value = {
+            ebookId: route.query.ebookId,
+          };
+          editor.txt.html("");
+          message.success("保存成功！");
           // 重新加载列表
           handleQuery();
+
         } else {
           message.error(data.message);
         }
@@ -274,15 +272,14 @@ export default defineComponent({
       }
     };
 
-
-
     /**
      * 编辑
      */
     const edit = (record: any) => {
-      modalVisible.value = true;
+      //先把框给清一下
+      editor.txt.html("");
       doc.value = Tool.copy(record); //对象复制
-
+      handleQueryContent();//获取content内容赋值
       // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
       treeSelectData.value = Tool.copy(level1.value);
       setDisable(treeSelectData.value, record.id);
@@ -290,18 +287,15 @@ export default defineComponent({
       // 为选择树添加一个"无"
       treeSelectData.value.unshift({id: 0, name: '无'});
 
-
     };
 
     /**
      * 新增
      */
     const add = () => {
-      modalVisible.value = true;
       doc.value = {
         ebookId: route.query.ebookId,
       };
-
 
       treeSelectData.value = Tool.copy(level1.value) || [];
 
@@ -340,7 +334,20 @@ export default defineComponent({
     };
 
 
-
+    /**
+     * 内容content查询
+     **/
+    const handleQueryContent = () => {
+      axios.get("/doc/getContent/" + doc.value.id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          //赋值
+          editor.txt.html(data.content)
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
 
     //初始执行，应该先查第一页，获得的数据传入params
     onMounted(() => {
@@ -361,9 +368,6 @@ export default defineComponent({
       edit,
       add,
 
-
-      modalVisible,
-      modalLoading,
       handleSave,
       handleDelete,
 

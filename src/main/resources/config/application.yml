@@ -2,19 +2,32 @@ server:
   port: 8081
 
 spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
   application:
     name: my-wiki
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/mywiki?characterEncoding=UTF8&&autoReconnect=true&&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
-
   profiles:
     active: dev
+
 
 #配置文档：https://mp.baomidou.com/config/#mapperlocations
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
+  #用于在控制台输出sql
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+
+
+
+
+
+
 

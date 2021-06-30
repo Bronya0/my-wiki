@@ -2,7 +2,9 @@ package com.example.mywiki.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.mywiki.domain.Content;
 import com.example.mywiki.domain.Doc;
+import com.example.mywiki.mapper.ContentMapper;
 import com.example.mywiki.mapper.DocMapper;
 import com.example.mywiki.request.DocQueryReq;
 import com.example.mywiki.request.DocSaveReq;
@@ -25,6 +27,9 @@ import java.util.List;
 public class DocService {
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private ContentMapper contentMapper;
 
     @Resource
     private SnowFlake snowFlake;
@@ -59,11 +64,19 @@ public class DocService {
      */
     public void save(DocSaveReq saveReq){
         Doc doc = CopyUtil.copy(saveReq, Doc.class);
+        Content content = CopyUtil.copy(saveReq, Content.class);
         if (ObjectUtils.isEmpty(saveReq.getId())){
-            doc.setId(snowFlake.nextId());
+            //生成id
+            Long id = snowFlake.nextId();
+            //新增id、doc、content
+            doc.setId(id);
+            content.setId(id);
             docMapper.insert(doc);
+            contentMapper.insert(content);
         }else {
+            //更新doc、content
             docMapper.updateById(doc);
+            contentMapper.updateById(content);
         }
     }
 
@@ -96,5 +109,15 @@ public class DocService {
         List<DocQueryResp> respList = CopyUtil.copyList(docList, DocQueryResp.class);
 
         return respList;
+    }
+
+    /*
+     * 获取文本content
+     * @param id
+     * @return
+     */
+    public String getContent(Long id){
+        String content = contentMapper.selectById(id).getContent();
+        return content;
     }
 }

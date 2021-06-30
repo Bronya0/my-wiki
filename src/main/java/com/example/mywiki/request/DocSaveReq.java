@@ -35,6 +35,12 @@ public class DocSaveReq implements Serializable {
     private String name;
 
     /**
+     * 文档内容html字符串
+     */
+    @NotNull(message = "内容不能为空")
+    private String content;
+
+    /**
      * 顺序
      */
     @NotNull(message = "顺序不能为空")

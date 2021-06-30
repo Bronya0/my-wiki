@@ -2,8 +2,8 @@ package com.example.mywiki.controller;
 
 import com.example.mywiki.request.DocQueryReq;
 import com.example.mywiki.request.DocSaveReq;
-import com.example.mywiki.response.DocQueryResp;
 import com.example.mywiki.response.CommonResp;
+import com.example.mywiki.response.DocQueryResp;
 import com.example.mywiki.response.PageResp;
 import com.example.mywiki.service.DocService;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +36,19 @@ public class DocController {
         return commonResp;
     }
 
+    /**
+     * 查询文本内容
+     * @param id
+     * @return
+     */
+    @GetMapping("/getContent/{id}")
+    public CommonResp getContent(@PathVariable Long id){
+        CommonResp<String> commonResp = new CommonResp<>();
+        String content = docService.getContent(id);
+        commonResp.setContent(content);
+        return commonResp;
+    }
+
 
     /**
      * 电子书新增/保存
@@ -51,6 +64,9 @@ public class DocController {
 
     /**
      * 电子书删除
+     *
+     * 注解@PathVariable: 接收请求路径中占位符的值
+     *
      * @param idsStr
      * @return
      */
