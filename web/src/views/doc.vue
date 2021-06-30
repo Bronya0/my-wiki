@@ -33,6 +33,9 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const docs = ref();
+    //默认选中的节点，数组格式
+    const defaultSelectedKeys = ref();
+    defaultSelectedKeys.value = [];
 
     /**
      * 一级文档树，children属性就是二级文档
@@ -54,6 +57,20 @@ export default defineComponent({
     doc.value = {};
 
     /**
+     * 查content
+     */
+    const handleQueryContent = (id: number) => {
+      axios.get("/doc/getContent/" + id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          html.value = data.content;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
      * 全部分类查询
      **/
     const handleQuery = () => {
@@ -69,6 +86,13 @@ export default defineComponent({
           //此处查的0就是一级文档000
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构：", level1);
+          //初始展开第一个文档内容在右侧
+          if (Tool.isNotEmpty(level1.value)){
+            defaultSelectedKeys.value = [level1.value[0].id];
+            handleQueryContent(level1.value[0].id);
+          }else {
+            message.warning("暂无文档，请移步电子书管理页添加文档",2);
+          }
         } else {
           message.error(data.message);
         }
@@ -76,20 +100,6 @@ export default defineComponent({
     };
 
 
-    /**
-     * 内容content查询
-     **/
-    const handleQueryContent = () => {
-      axios.get("/doc/getContent/" + doc.value.id).then((response) => {
-        const data = response.data;
-        if (data.success) {
-          //赋值
-          html.value = data.content
-        } else {
-          message.error(data.message);
-        }
-      });
-    };
 
     const onSelect = (selectedKeys: any, info: any) => {
       console.log('selected', selectedKeys, info);
@@ -110,6 +120,8 @@ export default defineComponent({
       level1,
       onSelect,
       html,
+      doc,
+      defaultSelectedKeys,
 
     }
   }

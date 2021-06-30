@@ -192,7 +192,9 @@ export default defineComponent({
     // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个变量
     const doc = ref();
     //初始化空对象
-    doc.value = {};
+    doc.value = {
+      ebookId: route.query.ebookId,
+    };
     //富文本编辑器，并设置高度为0避免遮挡其他
     const editor = new E('#content');
     editor.config.zIndex = 0;
@@ -305,6 +307,9 @@ export default defineComponent({
      * 新增
      */
     const add = () => {
+      // 清空富文本框
+      editor.txt.html("");
+
       doc.value = {
         ebookId: route.query.ebookId,
       };
