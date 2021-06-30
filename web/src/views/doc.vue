@@ -14,7 +14,7 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
-
+          <div class="wangeditor" :innerHTML = "html"></div>
         </a-col>
       </a-row>
     </a-layout-content>
@@ -47,7 +47,11 @@ export default defineComponent({
      */
     const level1 = ref(); // 一级文档树，children属性就是二级文档
     level1.value = [];
+    const html = ref();
 
+    // 当前选中的文档
+    const doc = ref();
+    doc.value = {};
 
     /**
      * 全部分类查询
@@ -72,6 +76,30 @@ export default defineComponent({
     };
 
 
+    /**
+     * 内容content查询
+     **/
+    const handleQueryContent = () => {
+      axios.get("/doc/getContent/" + doc.value.id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          //赋值
+          html.value = data.content
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    const onSelect = (selectedKeys: any, info: any) => {
+      console.log('selected', selectedKeys, info);
+      if (Tool.isNotEmpty(selectedKeys)) {
+        // 选中某一节点时，加载该节点的文档信息
+        doc.value = info.selectedNodes[0].props;
+        // 加载内容
+        handleQueryContent(selectedKeys[0]);
+      }
+    };
 
     onMounted(() => {
       handleQuery();
@@ -79,7 +107,8 @@ export default defineComponent({
 
     return {
       level1,
-
+      onSelect,
+      html,
     }
   }
 });
@@ -141,11 +170,7 @@ export default defineComponent({
   font-weight:600;
 }
 
-/* 点赞 */
-.vote-div {
-  padding: 15px;
-  text-align: center;
-}
+
 
 /* 图片自适应 */
 .wangeditor img {

@@ -119,6 +119,10 @@ public class DocService {
      */
     public String getContent(Long id){
         String content = contentMapper.selectById(id).getContent();
-        return content;
+        if (ObjectUtils.isEmpty(content)){
+            return "";
+        }else {
+            return content;
+        }
     }
 }
