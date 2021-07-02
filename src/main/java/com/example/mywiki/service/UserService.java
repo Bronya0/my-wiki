@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mywiki.domain.User;
+import com.example.mywiki.exception.BusinessException;
+import com.example.mywiki.exception.BusinessExceptionCode;
 import com.example.mywiki.mapper.UserMapper;
 import com.example.mywiki.request.UserQueryReq;
 import com.example.mywiki.request.UserSaveReq;
@@ -12,6 +14,7 @@ import com.example.mywiki.response.UserQueryResp;
 import com.example.mywiki.utils.CopyUtil;
 import com.example.mywiki.utils.SnowFlake;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -70,8 +73,14 @@ public class UserService {
         User user = CopyUtil.copy(saveReq,User.class);
         if (ObjectUtils.isEmpty(saveReq.getId())){
             //新增
-            user.setId(snowFlake.nextId());
-            userMapper.insert(user);
+            //判断用户名是否已存在
+            if (ObjectUtils.isEmpty(selectByLoginName(saveReq.getLoginName()))){
+                user.setId(snowFlake.nextId());
+                userMapper.insert(user);
+            }else {
+                throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+            }
+
         }else {
             //更新
             userMapper.updateById(user);
@@ -84,6 +93,22 @@ public class UserService {
      */
     public void delete(Long id){
         userMapper.deleteById(id);
+    }
+
+
+    /**
+     * 通过loginName获取用户信息
+     * @param loginName
+     */
+    public User selectByLoginName(String loginName){
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<User>()
+                .like("login_name",loginName);
+        List<User> userList = userMapper.selectList(userQueryWrapper);
+        if (CollectionUtils.isEmpty(userList)){
+            return null;
+        }else {
+            return userList.get(0);
+        }
     }
 
 
