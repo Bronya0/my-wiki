@@ -82,10 +82,8 @@ public class UserService {
             }
 
         }else {
-            //更新
-            if (ObjectUtils.isEmpty(user.getLoginName())) {
-                userMapper.updateById(user);
-            }
+            user.setLoginName(null);
+            userMapper.updateById(user);
         }
     }
 

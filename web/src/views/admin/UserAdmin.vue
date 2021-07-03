@@ -7,7 +7,8 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="名称" @keyup.enter="handleQuery({page: 1, size: pagination.pageSize})" >
+            <a-input v-model:value="param.name" placeholder="名称"
+                     @keyup.enter="handleQuery({page: 1, size: pagination.pageSize})">
             </a-input>
           </a-form-item>
           <a-form-item>
@@ -32,7 +33,7 @@
           @change="handleTableChange"
       >
         <template #cover="{ text: cover }">
-          <img v-if="cover" :src="cover" alt="avatar" />
+          <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
         <template v-slot:category="{ text, record }">
           <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
@@ -70,9 +71,9 @@
         <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
       </a-form-item>
       <a-form-item label="昵称">
-        <a-input v-model:value="user.name" />
+        <a-input v-model:value="user.name"/>
       </a-form-item>
-      <a-form-item label="密码" >
+      <a-form-item label="密码">
         <a-input v-model:value="user.password" type="password"/>
       </a-form-item>
     </a-form>
@@ -85,6 +86,10 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
 import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
+//忽略检查
+declare let hexMd5:any;
+declare let KEY:any;
+
 
 export default defineComponent({
   name: 'AdminUser',
@@ -119,7 +124,7 @@ export default defineComponent({
       {
         title: '操作',
         key: 'action',
-        slots: { customRender: 'action' }
+        slots: {customRender: 'action'}
       }
     ];
 
@@ -159,10 +164,16 @@ export default defineComponent({
     const modalVisible = ref(false);
     const modalLoading = ref(false);
 
+    /**
+     *modal编辑: 新增和保存
+     *
+     */
     const handleModalOk = () => {
       modalLoading.value = true;
       axios.post("/user/save", user.value).then((response) => {
         modalLoading.value = false;
+        //前端对密码进行一次加密，KEY为盐值
+        user.value.password = hexMd5(user.value.password + KEY);
         const data = response.data; // data = commonResp
         if (data.success) { //如果成功
           modalVisible.value = false;
@@ -212,9 +223,6 @@ export default defineComponent({
     };
 
 
-
-
-
     //初始执行，应该先查第一页，获得的数据传入params
     onMounted(() => {
       handleQuery({
@@ -240,7 +248,6 @@ export default defineComponent({
       modalLoading,
       handleModalOk,
       handleDelete,
-
 
 
     }
