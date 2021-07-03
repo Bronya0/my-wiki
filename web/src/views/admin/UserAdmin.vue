@@ -44,6 +44,9 @@
             <a-button type="primary" @click="edit(record)">
               编辑
             </a-button>
+            <a-button type="primary" @click="resetPassword(record)">
+              密码
+            </a-button>
             <a-popconfirm
                 title="删除后不可恢复，确认删除?"
                 ok-text="是"
@@ -60,6 +63,7 @@
 
     </a-layout-content>
   </a-layout>
+
   <a-modal
       title="用户编辑"
       v-model:visible="modalVisible"
@@ -74,6 +78,19 @@
         <a-input v-model:value="user.name"/>
       </a-form-item>
       <a-form-item label="密码" v-show="!user.id">
+        <a-input v-model:value="user.password" type="password" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+
+  <a-modal
+      title="密码修改"
+      v-model:visible="resetModalVisible"
+      :confirm-loading="resetModalLoading"
+      @ok="handleResetModalOk"
+  >
+    <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <a-form-item label="新密码" >
         <a-input v-model:value="user.password" type="password" />
       </a-form-item>
     </a-form>
@@ -156,18 +173,15 @@ export default defineComponent({
     };
 
 
-    // -------- 表单 ---------
     /**
+     * 表单
+     * modal编辑: 新增和保存
      * 数组，[100, 101]对应：前端开发 / Vue
      */
     const user = ref();
     const modalVisible = ref(false);
     const modalLoading = ref(false);
 
-    /**
-     *modal编辑: 新增和保存
-     *
-     */
     const handleModalOk = () => {
       modalLoading.value = true;
       axios.post("/user/save", user.value).then((response) => {
@@ -196,6 +210,7 @@ export default defineComponent({
       user.value = Tool.copy(record); //对象复制
     };
 
+
     /**
      * 新增
      */
@@ -222,6 +237,39 @@ export default defineComponent({
       });
     };
 
+    /**
+     * 密码重置确认按钮
+     */
+    const resetModalVisible = ref(false);
+    const resetModalLoading = ref(false);
+    const handleResetModalOk = () => {
+      resetModalLoading.value = true;
+      axios.post("/user/resetPassword", user.value).then((response) => {
+        resetModalLoading.value = false;
+        //前端对密码进行一次加密，KEY为盐值
+        user.value.password = hexMd5(user.value.password + KEY);
+        const data = response.data; // data = commonResp
+        if (data.success) { //如果成功
+          resetModalVisible.value = false;
+          // 重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 密码重置
+     */
+    const resetPassword = (record: any) => {
+      resetModalVisible.value = true;
+      user.value = Tool.copy(record); //对象复制
+      user.value.password = null;
+    };
 
     //初始执行，应该先查第一页，获得的数据传入params
     onMounted(() => {
@@ -245,8 +293,12 @@ export default defineComponent({
 
 
       modalVisible,
+      resetModalVisible,
       modalLoading,
+      resetModalLoading,
       handleModalOk,
+      handleResetModalOk,
+      resetPassword,
       handleDelete,
 
 

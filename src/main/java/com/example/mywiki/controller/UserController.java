@@ -1,6 +1,7 @@
 package com.example.mywiki.controller;
 
 import com.example.mywiki.request.UserQueryReq;
+import com.example.mywiki.request.UserResetPasswordReq;
 import com.example.mywiki.request.UserSaveReq;
 import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.response.PageResp;
@@ -47,6 +48,20 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp commonResp = new CommonResp<>();
         userService.save(req);
+        return commonResp;
+    }
+
+    /**
+     * 重置密码
+     * @param passwordReq
+     * @return
+     */
+    @PostMapping("/resetPassword")
+    public CommonResp resetPassword(@Valid UserResetPasswordReq passwordReq){
+        //对密码做md5加密
+        passwordReq.setPassword(DigestUtils.md5DigestAsHex(passwordReq.getPassword().getBytes()));
+        CommonResp commonResp = new CommonResp<>();
+        userService.resetPassword(passwordReq);
         return commonResp;
     }
 
