@@ -82,7 +82,9 @@ public class UserService {
             }
 
         }else {
+            //保存更新时不接受loginName和password
             user.setLoginName(null);
+            user.setPassword(null);
             userMapper.updateById(user);
         }
     }
