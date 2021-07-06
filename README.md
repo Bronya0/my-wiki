@@ -4,3 +4,6 @@
 ## 使用
 - 后端启动类：MyWikiApplication
 - 前端： 先npm install安装模块，然后运行package.json里的命令即可，例如：npm run serve-dev
+
+## License
+MIT

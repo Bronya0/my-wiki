@@ -1,10 +1,12 @@
 package com.example.mywiki.controller;
 
+import com.example.mywiki.request.UserLoginReq;
 import com.example.mywiki.request.UserQueryReq;
 import com.example.mywiki.request.UserResetPasswordReq;
 import com.example.mywiki.request.UserSaveReq;
 import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.response.PageResp;
+import com.example.mywiki.response.UserLoginResp;
 import com.example.mywiki.response.UserQueryResp;
 import com.example.mywiki.service.UserService;
 import org.springframework.util.DigestUtils;
@@ -77,6 +79,19 @@ public class UserController {
         return commonResp;
     }
 
+    /**
+     * 登录login接口
+     * @param
+     * @return
+     */
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq userLoginReq){
+        userLoginReq.setPassword(DigestUtils.md5DigestAsHex(userLoginReq.getPassword().getBytes()));
+        CommonResp<Object> commonResp = new CommonResp<>();
+        UserLoginResp userLoginResp = userService.login(userLoginReq);
+        commonResp.setContent(userLoginResp);
+        return commonResp;
+    }
 
 
 }

@@ -7,13 +7,16 @@ import com.example.mywiki.domain.User;
 import com.example.mywiki.exception.BusinessException;
 import com.example.mywiki.exception.BusinessExceptionCode;
 import com.example.mywiki.mapper.UserMapper;
+import com.example.mywiki.request.UserLoginReq;
 import com.example.mywiki.request.UserQueryReq;
 import com.example.mywiki.request.UserResetPasswordReq;
 import com.example.mywiki.request.UserSaveReq;
 import com.example.mywiki.response.PageResp;
+import com.example.mywiki.response.UserLoginResp;
 import com.example.mywiki.response.UserQueryResp;
 import com.example.mywiki.utils.CopyUtil;
 import com.example.mywiki.utils.SnowFlake;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -27,7 +30,9 @@ import java.util.List;
  * Created by tangssst@qq.com on 2021/06/04
  */
 @Service
+@Slf4j
 public class UserService {
+
     @Resource
     private UserMapper userMapper;
 
@@ -120,6 +125,31 @@ public class UserService {
             return null;
         }else {
             return userList.get(0);
+        }
+    }
+
+    /**
+     * 登录login
+     * @param userLoginReq
+     * @return
+     */
+    public UserLoginResp login(UserLoginReq userLoginReq){
+        User user = selectByLoginName(userLoginReq.getLoginName());
+        if (ObjectUtils.isEmpty(user)){
+            //用户名为空,抛出异常
+            log.info("用户名不存在,{}",userLoginReq.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        }else {
+            //比对数据库的密码和传入的密码，都是两层加密
+            if (user.getPassword().equals(userLoginReq.getPassword())){
+                //登录成功
+                UserLoginResp loginResp = CopyUtil.copy(user, UserLoginResp.class);
+                return loginResp;
+            }else {
+                //密码不对
+                log.info("密码不对，输入的密码：{}，数据库密码：{}",userLoginReq.getPassword(),user.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
         }
     }
 
