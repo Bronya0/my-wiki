@@ -2,6 +2,7 @@ package com.example.mywiki.controller;
 
 import com.example.mywiki.exception.BusinessException;
 import com.example.mywiki.response.CommonResp;
+import com.example.mywiki.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     /**
      * 校验异常统一处理
@@ -27,7 +28,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp validExceptionHandler(BindException e) {
         CommonResp commonResp = new CommonResp();
-        LOG.warn("参数校验失败：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        log.warn("参数校验失败：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return commonResp;
@@ -42,7 +43,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp validExceptionHandler(BusinessException e) {
         CommonResp commonResp = new CommonResp();
-        LOG.warn("业务异常：{}", e.getCode().getDesc());
+        log.warn("业务异常：{}", e.getCode().getDesc());
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getCode().getDesc());
         return commonResp;
@@ -56,7 +57,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp validExceptionHandler(Exception e){
         CommonResp commonResp = new CommonResp();
-        LOG.error("系统异常：", e);
+        log.error("系统异常：", e);
         commonResp.setSuccess(false);
         commonResp.setMessage("系统异常，请联系管理员");
         return commonResp;

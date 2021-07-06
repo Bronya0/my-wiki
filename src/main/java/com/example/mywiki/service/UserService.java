@@ -16,13 +16,13 @@ import com.example.mywiki.response.UserLoginResp;
 import com.example.mywiki.response.UserQueryResp;
 import com.example.mywiki.utils.CopyUtil;
 import com.example.mywiki.utils.SnowFlake;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +30,9 @@ import java.util.List;
  * Created by tangssst@qq.com on 2021/06/04
  */
 @Service
-@Slf4j
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Resource
     private UserMapper userMapper;
@@ -46,10 +47,10 @@ public class UserService {
      */
     public PageResp<UserQueryResp> search(UserQueryReq req) {
 
-        List<User> userList = new ArrayList<>();
+        List<User> userList;
         Page<User> page = new Page<>();
         page.setPages(req.getPage()).setSize(req.getSize());
-        QueryWrapper<User> wrapper = new QueryWrapper<User>();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
 
         if (!ObjectUtils.isEmpty(req.getLoginName())) {
             //有loginName则模糊查询

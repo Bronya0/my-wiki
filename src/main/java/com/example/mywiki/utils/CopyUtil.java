@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class CopyUtil {
     /**
-     * 单体复制，参数为源对象和目标class，通过newInstance方法生成对象，并将源对象的属性复制到到新对象里，返回新对象。
+     * 单体复制，左边为源对象，右边为目标class，通过newInstance方法生成对象，并将源对象的属性复制到到新对象里，返回新对象。
      */
     public static <T> T copy(Object source, Class<T> clazz) {
         if (source == null) {

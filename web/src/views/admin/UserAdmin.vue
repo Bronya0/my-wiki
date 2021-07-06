@@ -184,10 +184,10 @@ export default defineComponent({
 
     const handleModalOk = () => {
       modalLoading.value = true;
+      //前端对密码进行一次加密，KEY为盐值
+      user.value.password = hexMd5(user.value.password + KEY);
       axios.post("/user/save", user.value).then((response) => {
         modalLoading.value = false;
-        //前端对密码进行一次加密，KEY为盐值
-        user.value.password = hexMd5(user.value.password + KEY);
         const data = response.data; // data = commonResp
         if (data.success) { //如果成功
           modalVisible.value = false;
@@ -244,10 +244,12 @@ export default defineComponent({
     const resetModalLoading = ref(false);
     const handleResetModalOk = () => {
       resetModalLoading.value = true;
+      //前端对密码进行一次加密，KEY为盐值
+      user.value.password = hexMd5(user.value.password + KEY);
+
       axios.post("/user/resetPassword", user.value).then((response) => {
         resetModalLoading.value = false;
-        //前端对密码进行一次加密，KEY为盐值
-        user.value.password = hexMd5(user.value.password + KEY);
+
         const data = response.data; // data = commonResp
         if (data.success) { //如果成功
           resetModalVisible.value = false;

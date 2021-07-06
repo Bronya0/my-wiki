@@ -59,7 +59,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/resetPassword")
-    public CommonResp resetPassword(@Valid UserResetPasswordReq passwordReq){
+    public CommonResp resetPassword(@Valid @RequestBody UserResetPasswordReq passwordReq){
         //对密码做md5加密
         passwordReq.setPassword(DigestUtils.md5DigestAsHex(passwordReq.getPassword().getBytes()));
         CommonResp commonResp = new CommonResp<>();
