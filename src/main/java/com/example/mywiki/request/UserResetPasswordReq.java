@@ -2,7 +2,7 @@ package com.example.mywiki.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Created by tangssst@qq.com on 2021/07/03
@@ -18,6 +18,6 @@ public class UserResetPasswordReq {
     /**
      * 密码
      */
-    @NotNull(message = "密码不能为空")
+    @NotEmpty(message = "密码不能为空")
     private String password;
 }

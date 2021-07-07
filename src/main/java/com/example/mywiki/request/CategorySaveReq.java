@@ -2,7 +2,7 @@ package com.example.mywiki.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Created by tangssst@qq.com on 2021/06/15
@@ -14,10 +14,10 @@ public class CategorySaveReq {
 
     private Long parent;
 
-    @NotNull(message = "名称不能为空")
+    @NotEmpty(message = "名称不能为空")
     private String name;
 
-    @NotNull(message = "顺序不能为空")
+    @NotEmpty(message = "顺序不能为空")
     private Integer sort;
 
 

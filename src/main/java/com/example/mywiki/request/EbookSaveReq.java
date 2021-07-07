@@ -2,7 +2,7 @@ package com.example.mywiki.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Ebook实体类，id、name、category1Id、category2Id、description、cover、docCount、viewCount、voteCount
@@ -12,7 +12,7 @@ public class EbookSaveReq {
 
     private Long id;
 
-    @NotNull(message = "名称不能为空")
+    @NotEmpty(message = "名称不能为空")
     private String name;
 
     private Long category1Id;
