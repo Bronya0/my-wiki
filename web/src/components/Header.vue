@@ -1,6 +1,6 @@
 <template>
   <a-layout-header class="header">
-    <div class="logo" />
+    <div class="logo">my-wiki知识库</div>
     <a-menu
         theme="dark"
         mode="horizontal"
