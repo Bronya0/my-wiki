@@ -1,25 +1,38 @@
-//package com.example.mywiki.config;
-//
-//import com.example.mywiki.interceptor.LogInterceptor;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-//
-//import javax.annotation.Resource;
-//
-///**
-// * 拦截器打印耗时
-// * Created by tangssst@qq.com on 2021/06/09
-// */
-//@Configuration
-//public class SpringMvcConfig implements WebMvcConfigurer {
-//    @Resource
-//    private LogInterceptor logInterceptor;
-//
-//    public void addInterceptors(InterceptorRegistry registry){
-//        registry.addInterceptor(logInterceptor)
-//                .addPathPatterns("/**").excludePathPatterns("/login");
-//    }
-//
-//}
-//
+package com.example.mywiki.config;
+
+import com.example.mywiki.interceptor.LoginInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
+
+@Configuration
+public class SpringMvcConfig implements WebMvcConfigurer {
+
+    @Resource
+    LoginInterceptor loginInterceptor;
+
+
+    /**
+     * 注册登录拦截器
+     */
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor)
+                // 拦截的请求
+                .addPathPatterns("/**")
+                // 不拦截的请求（放行）
+                .excludePathPatterns(
+                        "/test/**",
+                        "/redis/**",
+                        "/user/login",
+                        "/category/all",
+                        "/ebook/search",
+                        "/doc/all/**",
+                        "/doc/vote/**",
+                        "/doc/getContent/**",
+                        "/ebook-snapshot/**"
+                );
+
+    }
+}
