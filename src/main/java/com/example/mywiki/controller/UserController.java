@@ -9,21 +9,33 @@ import com.example.mywiki.response.PageResp;
 import com.example.mywiki.response.UserLoginResp;
 import com.example.mywiki.response.UserQueryResp;
 import com.example.mywiki.service.UserService;
+import com.example.mywiki.utils.SnowFlake;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tangssst@qq.com on 2021/06/04
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private SnowFlake snowFlake;
 
     /**
      * 查询
@@ -89,6 +101,11 @@ public class UserController {
         userLoginReq.setPassword(DigestUtils.md5DigestAsHex(userLoginReq.getPassword().getBytes()));
         CommonResp<Object> commonResp = new CommonResp<>();
         UserLoginResp userLoginResp = userService.login(userLoginReq);
+        Long token = snowFlake.nextId();
+        userLoginResp.setToken(token.toString());
+        ValueOperations ops = redisTemplate.opsForValue();
+        ops.set(token,userLoginResp,24, TimeUnit.HOURS);
+        log.info("生成了token：{}, 并放入redis", token);
         commonResp.setContent(userLoginResp);
         return commonResp;
     }
