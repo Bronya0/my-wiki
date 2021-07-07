@@ -104,7 +104,7 @@ public class UserController {
         Long token = snowFlake.nextId();
         userLoginResp.setToken(token.toString());
         ValueOperations ops = redisTemplate.opsForValue();
-        ops.set(token,userLoginResp,24, TimeUnit.HOURS);
+        ops.set(token.toString(),userLoginResp,24, TimeUnit.HOURS);
         log.info("生成了token：{}, 并放入redis", token);
         commonResp.setContent(userLoginResp);
         return commonResp;
