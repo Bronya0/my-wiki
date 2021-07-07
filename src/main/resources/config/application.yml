@@ -13,6 +13,10 @@ spring:
     password: 123456
   profiles:
     active: dev
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
 
 
 #配置文档：https://mp.baomidou.com/config/#mapperlocations
