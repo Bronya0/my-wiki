@@ -10,13 +10,18 @@
             <result property="parent" column="parent" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="sort" column="sort" jdbcType="INTEGER"/>
-            <result property="viwCount" column="viw_count" jdbcType="INTEGER"/>
+            <result property="viewCount" column="view_count" jdbcType="INTEGER"/>
             <result property="voteCount" column="vote_count" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,ebook_id,parent,
-        name,sort,viw_count,
+        name,sort,view_count,
         vote_count
     </sql>
+
+    <update id="increaseViewCount" >
+        update doc set view_count = view_count + 1 where id = #{id}
+    </update>
+
 </mapper>

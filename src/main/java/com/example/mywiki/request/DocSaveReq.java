@@ -2,7 +2,7 @@ package com.example.mywiki.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -19,37 +19,37 @@ public class DocSaveReq implements Serializable {
     /**
      * 电子书id
      */
-    @NotEmpty(message = "电子书id不能为空")
+    @NotNull(message = "电子书id不能为空")
     private Long ebookId;
 
     /**
      * 父文档id
      */
-    @NotEmpty(message = "父文档id不能为空")
+    @NotNull(message = "父文档id不能为空")
     private Long parent;
 
     /**
      * 名称
      */
-    @NotEmpty(message = "名称不能为空")
+    @NotNull(message = "名称不能为空")
     private String name;
 
     /**
      * 文档内容html字符串
      */
-    @NotEmpty(message = "内容不能为空")
+    @NotNull(message = "内容不能为空")
     private String content;
 
     /**
      * 顺序
      */
-    @NotEmpty(message = "顺序不能为空")
+    @NotNull(message = "顺序不能为空")
     private Integer sort;
 
     /**
      * 阅读数
      */
-    private Integer viwCount;
+    private Integer viewCount;
 
     /**
      * 点赞数

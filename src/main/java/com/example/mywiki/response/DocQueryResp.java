@@ -38,7 +38,7 @@ public class DocQueryResp implements Serializable {
     /**
      * 阅读数
      */
-    private Integer viwCount;
+    private Integer viewCount;
 
     /**
      * 点赞数

@@ -112,13 +112,15 @@ public class DocService {
         return respList;
     }
 
-    /*
+    /**
      * 获取文本content
      * @param id
      * @return
      */
     public String getContent(Long id){
         String content = contentMapper.selectById(id).getContent();
+        //阅读量+1
+        docMapper.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)){
             return "";
         }else {

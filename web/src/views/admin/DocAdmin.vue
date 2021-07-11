@@ -38,16 +38,9 @@
                 <a-button type="primary" @click="edit(record)" size="small">
                   编辑
                 </a-button>
-                <a-popconfirm
-                    title="删除后不可恢复，确认删除?"
-                    ok-text="是"
-                    cancel-text="否"
-                    @confirm="handleDelete(record.id)"
-                >
-                  <a-button type="danger" size="small">
+                  <a-button type="danger" size="small" @click="handleDelete(record.id)">
                     删除
                   </a-button>
-                </a-popconfirm>
               </a-space>
             </template>
           </a-table>

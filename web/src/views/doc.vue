@@ -14,7 +14,20 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
-          <div class="wangeditor" :innerHTML = "html"></div>
+          <div>
+            <h2>{{doc.name}}</h2>
+            <div>
+              <span>阅读数：{{doc.viewCount}}</span> &nbsp; &nbsp;
+              <span>点赞数：{{doc.voteCount}}</span>
+            </div>
+            <a-divider style="height: 2px; background-color: #9999cc"/>
+          </div>
+          <div class="wangeditor" :innerHTML="html"></div>
+          <div class="vote-div">
+            <a-button type="primary" shape="round" :size="'large'" @click="vote">
+              <template #icon><LikeOutlined /> &nbsp;点赞：{{doc.voteCount}} </template>
+            </a-button>
+          </div>
         </a-col>
       </a-row>
     </a-layout-content>
@@ -52,10 +65,6 @@ export default defineComponent({
     level1.value = [];
     const html = ref();
 
-    // 当前选中的文档
-    const doc = ref();
-    doc.value = {};
-
     /**
      * 查content
      */
@@ -71,27 +80,26 @@ export default defineComponent({
     };
 
     /**
-     * 全部分类查询
+     * 文档查询
      **/
+    const doc = ref();
+    doc.value = {};
     const handleQuery = () => {
-      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
-      level1.value = [];
-      axios.get("/doc/all/"+ route.query.ebookId).then((response) => {
+      axios.get("/doc/all/" + route.query.ebookId).then((response) => {
         const data = response.data;
         if (data.success) {
           docs.value = data.content;
-          console.log("原始数组：", docs.value);
 
           level1.value = [];
-          //此处查的0就是一级文档000
           level1.value = Tool.array2Tree(docs.value, 0);
-          console.log("树形结构：", level1);
-          //初始展开第一个文档内容在右侧
-          if (Tool.isNotEmpty(level1.value)){
+
+          if (Tool.isNotEmpty(level1.value)) {
             defaultSelectedKeys.value = [level1.value[0].id];
             handleQueryContent(level1.value[0].id);
+            // 初始显示文档信息
+            doc.value = level1.value[0];
           }else {
-            message.warning("暂无文档，请移步电子书管理页添加文档",2);
+            message.warning('暂无文档，请新增',2)
           }
         } else {
           message.error(data.message);
