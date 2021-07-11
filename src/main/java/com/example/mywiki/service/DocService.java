@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mywiki.domain.Content;
 import com.example.mywiki.domain.Doc;
+import com.example.mywiki.exception.BusinessException;
+import com.example.mywiki.exception.BusinessExceptionCode;
 import com.example.mywiki.mapper.ContentMapper;
 import com.example.mywiki.mapper.DocMapper;
 import com.example.mywiki.request.DocQueryReq;
@@ -11,6 +13,8 @@ import com.example.mywiki.request.DocSaveReq;
 import com.example.mywiki.response.DocQueryResp;
 import com.example.mywiki.response.PageResp;
 import com.example.mywiki.utils.CopyUtil;
+import com.example.mywiki.utils.RedisUtil;
+import com.example.mywiki.utils.RequestContext;
 import com.example.mywiki.utils.SnowFlake;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -33,6 +37,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    public RedisUtil redisUtil;
 
     /**
      * Doc查询方法
@@ -125,6 +132,20 @@ public class DocService {
             return "";
         }else {
             return content;
+        }
+    }
+
+    /**
+     * 更新点赞量
+     * @param id
+     */
+    public void vote(Long id) {
+        // 远程IP+doc.id作为key，24小时内不能重复
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 3600*24)) {
+            docMapper.increaseVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
     }
 }

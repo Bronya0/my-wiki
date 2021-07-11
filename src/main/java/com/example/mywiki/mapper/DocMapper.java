@@ -14,6 +14,13 @@ public interface DocMapper extends BaseMapper<Doc> {
      * @return
      */
     int increaseViewCount(@Param("id") Long id);
+
+    /**
+     * 点赞量+1
+     * @param id
+     * @return
+     */
+    int increaseVoteCount(@Param("id") Long id);
 }
 
 

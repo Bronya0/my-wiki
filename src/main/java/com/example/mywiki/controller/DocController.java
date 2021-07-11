@@ -89,4 +89,15 @@ public class DocController {
         return commonResp;
     }
 
+    /**
+     * 更新点赞量
+     * @param id
+     */
+    @GetMapping("/vote/{id}")
+    public CommonResp vote(@PathVariable Long id){
+        CommonResp commonResp = new CommonResp<>();
+        docService.vote(id);
+        return commonResp;
+    }
+
 }
