@@ -30,10 +30,18 @@
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component v-bind:is="type" style="margin-right: 8px" />
-            {{ text }}
-          </span>
+              <span>
+                <component v-bind:is="'FileTextOutlined'"  />
+                {{ item.docCount }}
+              </span>
+              <span>
+                <component v-bind:is="'EyeOutlined'"  />
+                {{ item.viewCount }}
+              </span>
+              <span>
+                <component v-bind:is="'LikeOutlined'"  />
+                {{ item.voteCount }}
+              </span>
             </template>
             <a-list-item-meta :description="item.description">
               <template #title>
@@ -54,7 +62,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref} from "vue";
 import axios from "axios";
-import {LikeOutlined, MessageOutlined, StarOutlined} from '@ant-design/icons-vue';
+import {EyeOutlined, FileTextOutlined, LikeOutlined} from '@ant-design/icons-vue';
 import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 
@@ -63,9 +71,9 @@ const listData: Record<string, string>[] = [];
 export default defineComponent({
   name:'Home',
   components: {
-    StarOutlined,
     LikeOutlined,
-    MessageOutlined,
+    EyeOutlined,
+    FileTextOutlined,
   },
   setup(){
 
@@ -109,11 +117,6 @@ export default defineComponent({
       pageSize: 20,
     };
 
-    const actions: Record<string, string>[] = [
-      { type: 'StarOutlined', text: '156' },
-      { type: 'LikeOutlined', text: '156' },
-      { type: 'MessageOutlined', text: '2' },
-    ];
     /**
      * 查询电子书
      */
@@ -152,7 +155,6 @@ export default defineComponent({
       ebooks,
       listData,
       pagination,
-      actions,
       level1,
       openKeys,
       handleClick,

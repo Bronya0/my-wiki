@@ -148,4 +148,11 @@ public class DocService {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
     }
+
+    /**
+     * 电子书信息更新。在DocTask中被调用
+     */
+    public void updateEbookInfo(){
+        docMapper.updateEbookInfo();
+    }
 }

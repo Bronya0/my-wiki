@@ -10,7 +10,8 @@ import com.example.mywiki.response.UserLoginResp;
 import com.example.mywiki.response.UserQueryResp;
 import com.example.mywiki.service.UserService;
 import com.example.mywiki.utils.SnowFlake;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.DigestUtils;
@@ -25,7 +26,6 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/user")
-@Slf4j
 public class UserController {
 
     @Resource
@@ -36,6 +36,8 @@ public class UserController {
 
     @Resource
     private SnowFlake snowFlake;
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     /**
      * 查询
@@ -105,7 +107,7 @@ public class UserController {
         userLoginResp.setToken(token.toString());
         ValueOperations ops = redisTemplate.opsForValue();
         ops.set(token.toString(),userLoginResp,24, TimeUnit.HOURS);
-        log.info("生成了token：{}, 并放入redis", token);
+        LOG.info("生成了token：{}, 并放入redis", token);
         commonResp.setContent(userLoginResp);
         return commonResp;
     }
@@ -114,7 +116,7 @@ public class UserController {
     public CommonResp logout(@PathVariable String token) {
         CommonResp resp = new CommonResp<>();
         redisTemplate.delete(token);
-        log.info("从redis中删除token: {}", token);
+        LOG.info("从redis中删除token: {}", token);
         return resp;
     }
 

@@ -5,6 +5,7 @@ import com.example.mywiki.domain.Doc;
 import org.apache.ibatis.annotations.Param;
 
 /**
+ * 文档操作的几个接口
  * @Entity com.example.mywiki.domain.Doc
  */
 public interface DocMapper extends BaseMapper<Doc> {
@@ -13,14 +14,19 @@ public interface DocMapper extends BaseMapper<Doc> {
      * @param id
      * @return
      */
-    int increaseViewCount(@Param("id") Long id);
+     void increaseViewCount(@Param("id") Long id);
 
     /**
      * 点赞量+1
      * @param id
      * @return
      */
-    int increaseVoteCount(@Param("id") Long id);
+    void increaseVoteCount(@Param("id") Long id);
+
+    /**
+     * 文档信息更新接口
+     */
+    void updateEbookInfo();
 }
 
 
