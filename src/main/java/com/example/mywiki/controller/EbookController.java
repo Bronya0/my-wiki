@@ -1,15 +1,18 @@
 package com.example.mywiki.controller;
 
+import com.example.mywiki.domain.Ebook;
 import com.example.mywiki.request.EbookQueryReq;
 import com.example.mywiki.request.EbookSaveReq;
 import com.example.mywiki.response.CommonResp;
 import com.example.mywiki.response.EbookQueryResp;
 import com.example.mywiki.response.PageResp;
 import com.example.mywiki.service.EbookService;
+import com.example.mywiki.utils.CopyUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by tangssst@qq.com on 2021/06/04
@@ -32,6 +35,18 @@ public class EbookController {
         PageResp<EbookQueryResp> ebook = ebookService.search(req);
         commonResp.setContent(ebook);
         return commonResp;
+    }
+
+    /**
+     * 一次查出所有电子书
+     * @return
+     */
+    @GetMapping("/all")
+    public List<EbookQueryResp> all(){
+        List<Ebook> ebooks = ebookService.all();
+        //将List<Ebook>转换为List<EbookResp>
+        List<EbookQueryResp> respList = CopyUtil.copyList(ebooks, EbookQueryResp.class);
+        return respList;
     }
 
 

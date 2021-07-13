@@ -8,7 +8,7 @@
       >
         <a-menu-item  @click="handleQueryEbook">
           <MailOutlined />
-          <span>欢迎</span>
+          <span>全部电子书</span>
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id" >
           <template v-slot:title>
@@ -26,7 +26,7 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="ebooks" :grid="{ gutter: 16, column: 4 }" >
+      <a-list item-layout="vertical" size="large" :data-source="ebooks" :grid="{ gutter: 16, column: 4 }" >
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -100,22 +100,7 @@ export default defineComponent({
       });
     };
 
-    axios.get("/ebook/search",{
-      params:{
-        page:1,
-        size:1000,
-      }
-    }).then((response) => {
-      const data = response.data;
-      ebooks.value = data.content.list;
-    });
-
-    const pagination = {
-      onChange: (page: number) => {
-        console.log(page);
-      },
-      pageSize: 20,
-    };
+    let category2Id = 0;
 
     /**
      * 查询电子书
@@ -134,9 +119,17 @@ export default defineComponent({
     };
 
     /**
+     * 一次查全部查询电子书
+     */
+    const handleQueryEbookAll = () => {
+      axios.get("/ebook/all").then((response) => {
+        ebooks.value = response.data;
+      });
+    };
+
+    /**
      * 点击菜单查电子书
      */
-    let category2Id = 0;
     const handleClick = (value: any) => {
         category2Id = value.key;
         handleQueryEbook();
@@ -146,15 +139,13 @@ export default defineComponent({
 
     onMounted(() => {
       handleQueryCategory();
-      handleQueryEbook();
-
+      handleQueryEbookAll();
 
     });
 
     return {
       ebooks,
       listData,
-      pagination,
       level1,
       openKeys,
       handleClick,

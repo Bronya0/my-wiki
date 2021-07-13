@@ -67,6 +67,16 @@ public class EbookService {
     }
 
     /**
+     * 一次性查出所有电子书
+     * @param
+     * @return
+     */
+    public List<Ebook> all(){
+        List<Ebook> ebooks = ebookMapper.selectList(null);
+        return ebooks;
+    }
+
+    /**
      * Ebook保存save，传入的id无值是新增，id有值是更新
      * @param saveReq
      */
