@@ -16,7 +16,9 @@ import com.example.mywiki.utils.CopyUtil;
 import com.example.mywiki.utils.RedisUtil;
 import com.example.mywiki.utils.RequestContext;
 import com.example.mywiki.utils.SnowFlake;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -40,6 +42,10 @@ public class DocService {
 
     @Resource
     public RedisUtil redisUtil;
+
+    //WebSocketServer -> WebSocketService -> DocService
+    @Resource
+    private WebSocketService webSocketService;
 
     /**
      * Doc查询方法
@@ -69,6 +75,7 @@ public class DocService {
      * Doc保存save，传入的id无值是新增，id有值是更新
      * @param saveReq
      */
+    @Transactional
     public void save(DocSaveReq saveReq){
         Doc doc = CopyUtil.copy(saveReq, Doc.class);
         Content content = CopyUtil.copy(saveReq, Content.class);
@@ -147,6 +154,11 @@ public class DocService {
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
+        // 推送消息
+        Doc docDb = docMapper.selectById(id);
+        String logId = MDC.get("LOG_ID");
+        webSocketService.sendInfo("【" + docDb.getName() + "】被点赞！", logId);
+        // rocketMQTemplate.convertAndSend("VOTE_TOPIC", "【" + docDb.getName() + "】被点赞！");
     }
 
     /**
