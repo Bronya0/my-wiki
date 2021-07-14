@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <a-layout-sider width="200" style="background: #fff">
+    <a-layout-sider width="280" style="background: #fff">
       <a-menu
           :style="{ height: '100%', borderRight: 0 }"
           @click="handleClick"

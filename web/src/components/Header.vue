@@ -6,7 +6,7 @@
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
     >
-      <a-menu-item key="home">
+      <a-menu-item key="/">
         <router-link to="/">首页</router-link>
       </a-menu-item>
       <a-menu-item key="/admin/ebook" :style="user.id? {} : {display:'none'}">
