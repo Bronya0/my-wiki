@@ -26,8 +26,11 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-
-
+#rocketmq
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: default
 
 
 
