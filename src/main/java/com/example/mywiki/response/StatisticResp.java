@@ -12,6 +12,7 @@ import java.util.Date;
 @Data
 public class StatisticResp {
 
+    //格式化日期，避免显示太长
     @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
     private Date date;
 
