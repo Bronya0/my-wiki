@@ -172,9 +172,10 @@ export default defineComponent({
           //此处查的0就是一级文档000
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构：", level1);
-          //父文档下拉框初始化，免去点新增
-          treeSelectData.value = Tool.copy(level1.value);
-
+          //父文档下拉框初始化，免去点新增。[]用于防止空指针
+          treeSelectData.value = Tool.copy(level1.value) || [];
+          // 为选择树添加一个"无"的顶级分类
+          treeSelectData.value.unshift({id: 0, name: '无'});
         } else {
           message.error(data.message);
         }

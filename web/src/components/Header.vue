@@ -1,14 +1,13 @@
 <template>
   <a-layout-header class="header">
-    <div class="logo">my-wiki知识库</div>
+    <div class="logo">
+      <router-link to="/">my-wiki知识库</router-link>
+    </div>
     <a-menu
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
     >
-      <a-menu-item key="/">
-        <router-link to="/">首页</router-link>
-      </a-menu-item>
       <a-menu-item key="/admin/ebook" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/ebook">电子书管理</router-link>
       </a-menu-item>
@@ -142,8 +141,11 @@ export default defineComponent({
   /*background: rgba(255, 255, 255, 0.2);*/
   /*margin: 16px 28px 16px 0;*/
   float: left;
-  color: white;
   font-size: 18px;
+}
+.logo a{
+  color: #ffffffa6;
+
 }
 .login-menu {
   float: right;
