@@ -18,6 +18,9 @@
       <a-menu-item key="/admin/user" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/user">用户管理</router-link>
       </a-menu-item>
+      <a-menu-item key="/statistic" :style="user.id? {} : {display:'none'}">
+        <router-link to="/statistic">报表统计</router-link>
+      </a-menu-item>
       <a-menu-item key="/about">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>

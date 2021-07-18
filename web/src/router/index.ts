@@ -6,6 +6,7 @@ import UserAdmin from "@/views/admin/UserAdmin.vue";
 import EbookAdmin from '../views/admin/ebookAdmin.vue'
 import CategoryAdmin from '../views/admin/categoryAdmin.vue'
 import DocAdmin from "@/views/admin/DocAdmin.vue";
+import Statistic from "@/views/statistic.vue";
 import store from "@/store";
 import {Tool} from "@/util/tool";
 
@@ -53,6 +54,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin/user',
     name: 'UserAdmin',
     component: UserAdmin,
+    meta: {
+      loginRequire: true
+    }
+  },
+  {
+    path: '/statistic',
+    name: 'Statistic',
+    component: Statistic,
     meta: {
       loginRequire: true
     }
