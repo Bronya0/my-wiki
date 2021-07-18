@@ -1,5 +1,5 @@
 ## 简介
-一个采用SpringBoot框架制作的wiki知识库系统，orm框架使用MybatisPlus，集成redis、rabbitMQ。
+一个采用SpringBoot框架制作的wiki知识库系统，orm框架使用MybatisPlus，集成redis、RocketMQ。
 
 ## 使用
 - 后端启动类：MyWikiApplication
