@@ -2,13 +2,17 @@ import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 import Doc from '../views/doc.vue'
-import UserAdmin from "@/views/admin/UserAdmin.vue";
-import EbookAdmin from '../views/admin/ebookAdmin.vue'
-import CategoryAdmin from '../views/admin/categoryAdmin.vue'
-import DocAdmin from "@/views/admin/DocAdmin.vue";
-import Statistic from "@/views/statistic.vue";
 import store from "@/store";
 import {Tool} from "@/util/tool";
+
+const DocAdmin = () => import("@/views/admin/DocAdmin.vue");
+const statistic = () => import("@/views/statistic.vue");
+const UserAdmin = () => import("@/views/admin/UserAdmin.vue");
+const EbookAdmin = () => import("../views/admin/ebookAdmin.vue");
+const CategoryAdmin = () => import("../views/admin/categoryAdmin.vue");
+
+
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/statistic',
     name: 'Statistic',
-    component: Statistic,
+    component: statistic,
     meta: {
       loginRequire: true
     }

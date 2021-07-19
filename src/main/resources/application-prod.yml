@@ -1,0 +1,33 @@
+server:
+  port: 8001
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mywiki?characterEncoding=UTF8&&autoReconnect=true&&serverTimezone=Asia/Shanghai&&allowMultiQueries=true
+    username: root
+    password: 123456
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+
+
+#配置文档：https://mp.baomidou.com/config/#mapperlocations
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+
+#rocketmq
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: default
+
+
+
+
+
+
+

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
     <artifactId>my-wiki</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>my-wiki</name>
     <description>一个SpringBoot wiki知识库系统</description>
 
@@ -97,6 +97,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>/dist/${artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
